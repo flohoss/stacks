@@ -18,16 +18,14 @@ All services include Unraid Docker labels for easy management in Unraid's Docker
 
 ## Reverse Proxy
 
-All services are configured to work with [Traefik](traefik/) as a reverse proxy with:
+All services are configured to work with [Traefik](https://github.com/traefik/traefik) as a reverse proxy with:
 - Automatic HTTPS via Let's Encrypt
 - deSEC DNS challenge for certificate generation
 - Automatic service discovery via Docker labels
 
 ## Notes
 
-- All PostgreSQL databases use version 17.x (Alpine)
-- Redis services use version 7.x (Alpine)
-- MariaDB services use version 10.x
+- All PostgreSQL, Redis and MariaDB images use a pinned major version
 - All images use digest pinning for reproducible deployments
 - Healthchecks are configured with `depends_on` for proper startup ordering
 
