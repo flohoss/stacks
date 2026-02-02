@@ -1,0 +1,31 @@
+services:
+  directus:
+    image: directus/directus:11.14.1@sha256:ed77e528106e51433ecf513755b13c1be1697daa5c63a264345e778f5f141285
+    container_name: directus
+    restart: always
+    environment:
+      SECRET: ${SECRET}
+      DB_CLIENT: 'sqlite3'
+      DB_FILENAME: '/directus/database/database.sqlite'
+      PUBLIC_URL: 'https://${DOMAIN}'
+    volumes:
+      - ${DIRECTORY}/database:/directus/database
+      - ${DIRECTORY}/uploads:/directus/uploads
+      - ${DIRECTORY}/extensions:/directus/extensions
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/directus.webp
+      - traefik.enable=true
+      - traefik.http.routers.directus.entrypoints=https
+      - traefik.http.routers.directus.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.directus.tls=true
+      - traefik.http.routers.directus.tls.certresolver=desec
+    expose:
+      - 8055
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

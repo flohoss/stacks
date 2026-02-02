@@ -1,0 +1,35 @@
+services:
+  godash:
+    image: ghcr.io/flohoss/godash:v1.2.5@sha256:b89ab49d0ac08e87d88d5baf88a673d3e7f413f06f85ff73394ef20b1ed10d9a
+    container_name: godash
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    environment:
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - ${DIRECTORY}:/app/config
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/homebox.webp
+      - traefik.enable=true
+      - traefik.http.routers.godash.entrypoints=https
+      - traefik.http.routers.godash.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.godash.tls=true
+      - traefik.http.routers.godash.tls.certresolver=desec
+    expose:
+      - 8156
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

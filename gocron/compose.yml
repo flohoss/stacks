@@ -1,0 +1,25 @@
+services:
+  gocron:
+    image: ghcr.io/flohoss/gocron:v0.9.6@sha256:02ea25b974cebd355b3d84d08ed55bcbb903dfb32f0511a80f9d2e79716d38b6
+    container_name: gocron
+    restart: always
+    hostname: gobackup
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    volumes:
+      - ${DIRECTORY}/config:/app/config/
+      - ${DIRECTORY}/.resticpwd:/secrets/.resticpwd
+      - ${DIRECTORY}/.rclone.conf:/root/.config/rclone/rclone.conf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DATA_MOUNT}
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/restic.webp
+    ports:
+      - 8156:8156

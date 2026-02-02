@@ -1,0 +1,93 @@
+services:
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.6@sha256:a28330462994b937938e02aaa5632a1effcc7f9acfba96c1bef9c50e1167a027
+    container_name: paperless
+    restart: always
+    depends_on:
+      paperless-db:
+        condition: service_healthy
+      paperless-redis:
+        condition: service_healthy
+    environment:
+      PAPERLESS_REDIS: redis://paperless-redis:6379
+      PAPERLESS_DBHOST: paperless-db
+      PAPERLESS_DBNAME: db
+      PAPERLESS_DBUSER: user
+      PAPERLESS_DBPASS: password
+      PAPERLESS_OCR_LANGUAGE: deu+eng
+      PAPERLESS_OCR_LANGUAGES: 'eng deu'
+      PAPERLESS_URL: https://${DOMAIN}
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://${DOMAIN}
+      PAPERLESS_ALLOWED_HOSTS: ${BASE_DOMAIN}
+      PAPERLESS_USE_X_FORWARD_HOST: true
+      PAPERLESS_TIME_ZONE: Europe/Berlin
+      PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
+      PAPERLESS_APPS: 'allauth.socialaccount.providers.openid_connect'
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: '${SOCIALACCOUNT_PROVIDERS}'
+      PAPERLESS_DISABLE_REGULAR_LOGIN: ${DISABLE_REGULAR_LOGIN}
+    volumes:
+      - ${DIRECTORY}/data:/usr/src/paperless/data
+      - ${DIRECTORY}/export:/usr/src/paperless/export
+      - ${DIRECTORY}/media:/usr/src/paperless/media
+      - ${DIRECTORY}/consume:/usr/src/paperless/consume
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/paperless-ngx.webp
+      - traefik.enable=true
+      - traefik.http.routers.paperless.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.paperless.entrypoints=https
+    expose:
+      - 8000
+    networks:
+      - proxy
+      - net
+
+  paperless-db:
+    image: postgres:17.7-alpine3.21@sha256:5bcb5623bb6999b2f7fbd2109f0bfc1f144d138b52ca35ede95d644d93585c2f
+    container_name: paperless-db
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db:/var/lib/postgresql/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
+    expose:
+      - 5432
+    networks:
+      - net
+
+  paperless-redis:
+    image: redis:7.4.5-alpine3.21@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
+    container_name: paperless-redis
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping || exit 1']
+    volumes:
+      - redis:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
+    expose:
+      - 6379
+    networks:
+      - net
+
+networks:
+  proxy:
+    external: true
+  net:
+    external: false
+
+volumes:
+  db: {}
+  redis: {}

@@ -1,0 +1,22 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.35.2@sha256:d89a6d21e361254670c24a4272b4b5f245e402c284f2f55de2c379fdbcfa1fa5
+    container_name: vaultwarden
+    restart: always
+    volumes:
+      - ${DIRECTORY}/data:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/vaultwarden.webp
+      - traefik.enable=true
+      - traefik.http.routers.vaultwarden.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.vaultwarden.entrypoints=https
+    expose:
+      - 80
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

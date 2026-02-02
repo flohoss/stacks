@@ -1,0 +1,38 @@
+services:
+  ezbookkeeping:
+    image: mayswind/ezbookkeeping:1.3.2@sha256:253e3edb2077f104c71b27bcdb04e0532449d7aedc6ee947879542e8a1c48a7e
+    container_name: ezbookkeeping
+    restart: always
+    environment:
+      EBK_SERVER_DOMAIN: ${DOMAIN}
+      EBK_SERVER_ROOT_URL: https://${DOMAIN}
+      EBK_SECURITY_SECRET_KEY: ${SECRET}
+      EBK_AUTH_ENABLE_FORGET_PASSWORD: false
+      EBK_USER_ENABLE_REGISTER: false
+      EBK_USER_AVATAR_PROVIDER: gravatar
+      EBK_AUTH_ENABLE_INTERNAL_AUTH: false
+      EBK_AUTH_ENABLE_OAUTH2_AUTH: true
+      EBK_AUTH_OAUTH2_PROVIDER: oidc
+      EBK_AUTH_OAUTH2_CLIENT_ID: ${OAUTH2_CLIENT_ID}
+      EBK_AUTH_OAUTH2_CLIENT_SECRET: ${OAUTH2_CLIENT_SECRET}
+      EBK_AUTH_OIDC_PROVIDER_BASE_URL: ${OAUTH2_DISCOVERY_URL}
+    volumes:
+      - ${DIRECTORY}/storage:/ezbookkeeping/storage
+      - ${DIRECTORY}/data:/ezbookkeeping/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/ezbookkeeping.webp
+      - traefik.enable=true
+      - traefik.http.routers.ezbookkeeping.entrypoints=https
+      - traefik.http.routers.ezbookkeeping.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.ezbookkeeping.tls=true
+      - traefik.http.routers.ezbookkeeping.tls.certresolver=desec
+    expose:
+      - 8080
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,39 @@
+services:
+  radicale:
+    image: tomsquest/docker-radicale:3.6.0.0@sha256:4d46a338ae083db37418eb979e91c2ccfb0c7ef632ab9311b0ef54a41042f064
+    container_name: radicale
+    restart: always
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - KILL
+    deploy:
+      resources:
+        limits:
+          pids: 50
+          memory: 256M
+    volumes:
+      - ${DIRECTORY}/data:/data
+      - ${DIRECTORY}/config:/config:ro
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/radicale.webp
+      - traefik.enable=true
+      - traefik.http.routers.radicale.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.radicale.entrypoints=https
+    expose:
+      - 5232
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,51 @@
+services:
+  traefik:
+    image: traefik:v3.6.7@sha256:a9890c898f379c1905ee5b28342f6b408dc863f08db2dab20e46c267d1ff463a
+    container_name: traefik
+    restart: always
+    command: >
+      --global.checkNewVersion=false
+      --global.sendAnonymousUsage=false
+      --entrypoints.http.address=:80
+      --entrypoints.http.http.redirections.entryPoint.to=https
+      --entrypoints.https.address=:443
+      --entrypoints.https.transport.respondingTimeouts.readTimeout=600s
+      --entrypoints.https.transport.respondingTimeouts.idleTimeout=600s
+      --entrypoints.https.transport.respondingTimeouts.writeTimeout=600s
+      --entrypoints.https.http.encodedCharacters.allowEncodedSlash=true
+      --entrypoints.https.http.encodedCharacters.allowEncodedQuestionMark=true
+      --entrypoints.https.http.middlewares=security-headers@file
+      --entrypoints.https.http.tls.certresolver=desec
+      --providers.providersThrottleDuration=2s
+      --providers.file.watch=true
+      --providers.file.filename=/etc/traefik/fileConfig.yml
+      --providers.docker=true
+      --providers.docker.exposedbydefault=false
+      --providers.docker.network=proxy
+      --certificatesresolvers.desec.acme.email=${PRIVATE_EMAIL}
+      --certificatesresolvers.desec.acme.storage=/etc/traefik/acme.json
+      --certificatesresolvers.desec.acme.dnschallenge.provider=desec
+      --certificatesresolvers.desec.acme.dnschallenge.resolvers=45.54.76.1:53,185.49.141.38:53
+      --certificatesresolvers.desec.acme.dnschallenge.propagation.disableanschecks=true
+      --certificatesresolvers.desec.acme.dnschallenge.delaybeforecheck=300
+      --log.level=ERROR
+      --api.dashboard=false
+      --serversTransport.insecureSkipVerify=true
+      ${TRAEFIK_EXTRA_FLAGS:-}
+    environment:
+      DESEC_TOKEN: ${DESEC_TOKEN}
+    volumes:
+      - ${DIRECTORY}:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/traefik.webp
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,33 @@
+services:
+  gatus:
+    image: twinproduction/gatus:v5.34.0@sha256:3fff895e77d35ee62e898860f4613755bc2344127d93e3f326429d40270e2115
+    container_name: gatus
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    volumes:
+      - ${DIRECTORY}/config:/config
+      - ${DIRECTORY}/data:/data/
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/gatus.webp
+      - traefik.enable=true
+      - traefik.http.routers.gatus.entrypoints=https
+      - traefik.http.routers.gatus.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.gatus.tls=true
+      - traefik.http.routers.gatus.tls.certresolver=desec
+    expose:
+      - 8080
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,24 @@
+services:
+  pdf:
+    image: ghcr.io/alam00000/bentopdf:2.0.0@sha256:4c1761c2542e96b8161262473e3db23642c8ff1e382c56d4057da2fe2db87655
+    container_name: pdf
+    restart: always
+    environment:
+      TZ: Europe/Berlin
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/bentopdf.webp
+      - traefik.enable=true
+      - traefik.http.routers.pdf.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.pdf.entrypoints=https
+      - traefik.http.routers.pdf.tls=true
+      - traefik.http.routers.pdf.tls.certresolver=desec
+    expose:
+      - 8080
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,29 @@
+services:
+  ntfy:
+    image: binwiederhier/ntfy:v2.16.0@sha256:115357a63dd35e3d08ad03c93ade7d7eef63761726572b809da13f2999f1958f
+    container_name: ntfy
+    restart: always
+    command:
+      - serve
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      - ${DIRECTORY}/cache:/var/cache/ntfy
+      - ${DIRECTORY}/ntfy:/etc/ntfy
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/ntfy.webp
+      - traefik.enable=true
+      - traefik.http.routers.ntfy.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.ntfy.entrypoints=https
+      - traefik.http.routers.ntfy.tls=true
+      - traefik.http.routers.ntfy.tls.certresolver=desec
+    expose:
+      - 80
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,205 @@
+services:
+  matrix:
+    image: matrixdotorg/synapse:v1.146.0@sha256:5e629e8cae72b36c464e49210568932c2a31a2cc8ff3ed861edcd505f1398f95
+    container_name: matrix
+    restart: always
+    extra_hosts:
+      - '${UNIFIED_PUSH_HOST:-localhost}:${UNIFIED_PUSH_IP:-127.0.0.1}'
+    depends_on:
+      matrix-db:
+        condition: service_healthy
+    environment:
+      SYNAPSE_SERVER_NAME: ${BASE_DOMAIN}
+      SYNAPSE_REPORT_STATS: no
+      POSTGRES_PASSWORD: password
+      UID: 991
+      GID: 991
+    volumes:
+      - ${DIRECTORY}:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/synapse.webp
+      - traefik.enable=true
+      - traefik.http.routers.matrix.entrypoints=https
+      - traefik.http.routers.matrix.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.matrix.tls=true
+      - traefik.http.routers.matrix.tls.certresolver=desec
+      - traefik.http.routers.matrix.priority=1
+      - traefik.http.routers.matrix.service=matrix
+      - traefik.http.services.matrix.loadbalancer.server.port=8008
+    networks:
+      - proxy
+      - net
+
+  matrix-wellknown:
+    image: nginx:1.29.3-alpine3.22@sha256:b3c656d55d7ad751196f21b7fd2e8d4da9cb430e32f646adcf92441b72f82b14
+    container_name: matrix-wellknown
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
+    environment:
+      SYNAPSE_DOMAIN: ${DOMAIN}
+    command: |
+      /bin/sh -c "
+      mkdir -p /usr/share/nginx/html/.well-known/matrix
+      echo '{\"m.homeserver\": {\"base_url\": \"https://${DOMAIN}\"}}' > /usr/share/nginx/html/.well-known/matrix/client
+      echo '{\"m.server\": \"${DOMAIN}:443\"}' > /usr/share/nginx/html/.well-known/matrix/server
+      cat > /etc/nginx/nginx.conf << 'EOF'
+      events { worker_connections 1024; }
+      http {
+        server {
+          listen 80;
+          server_name _;
+          location /.well-known/matrix/ {
+            add_header Content-Type application/json;
+            add_header Access-Control-Allow-Origin *;
+            root /usr/share/nginx/html;
+            try_files \$$uri =404;
+          }
+        }
+      }
+      EOF
+      nginx -g 'daemon off;'
+      "
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}/.well-known/matrix/server
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/nginx.webp
+      - traefik.enable=true
+      - traefik.http.routers.matrix-wellknown.entrypoints=https
+      - traefik.http.routers.matrix-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/matrix/`)
+      - traefik.http.routers.matrix-wellknown.tls=true
+      - traefik.http.routers.matrix-wellknown.tls.certresolver=desec
+      - traefik.http.routers.matrix-wellknown.priority=100
+    networks:
+      - proxy
+
+  matrix-db:
+    image: postgres:17.7-alpine3.21@sha256:5bcb5623bb6999b2f7fbd2109f0bfc1f144d138b52ca35ede95d644d93585c2f
+    container_name: matrix-db
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db:/var/lib/postgresql/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
+    expose:
+      - 5432
+    networks:
+      - net
+
+  mautrix-signal:
+    image: dock.mau.dev/mautrix/signal:v0.2601.0@sha256:7123afe68978eb6e7326d0beeb5bae73cf36fe51ec39c0a6fddab50e8a2f67d9
+    container_name: mautrix-signal
+    restart: always
+    depends_on:
+      matrix-db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+    volumes:
+      - ${DIRECTORY}/signal:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/signal.webp
+    networks:
+      - net
+
+  mautrix-telegram:
+    image: dock.mau.dev/mautrix/telegram:v0.15.3@sha256:04066316717e224d26677550089740f65345d64ea4a78187f5d4e0e66d970f61
+    container_name: mautrix-telegram
+    restart: always
+    depends_on:
+      matrix-db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+    volumes:
+      - ${DIRECTORY}/telegram:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/telegram.webp
+    networks:
+      - net
+
+  mautrix-whatsapp:
+    image: dock.mau.dev/mautrix/whatsapp:v0.2601.0@sha256:cbd395cc939cdfab127a9bac1d090a12cb10a3f24046c3324c1ba4bc5f6c4b72
+    container_name: mautrix-whatsapp
+    restart: always
+    depends_on:
+      matrix-db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+    volumes:
+      - ${DIRECTORY}/whatsapp:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/whatsapp.webp
+    networks:
+      - net
+
+  mautrix-meta:
+    image: dock.mau.dev/mautrix/meta:v0.2512.0@sha256:1ba769047d4910675eed1ceb820c5cb6e8f6d0633ef4ce005ab802128c3b904f
+    container_name: mautrix-meta
+    restart: always
+    depends_on:
+      matrix-db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+    volumes:
+      - ${DIRECTORY}/meta:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/meta.webp
+    networks:
+      - net
+
+networks:
+  proxy:
+    external: true
+  net:
+    external: false
+
+volumes:
+  db: {}

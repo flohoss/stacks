@@ -1,0 +1,32 @@
+services:
+  pocket-id:
+    image: ghcr.io/pocket-id/pocket-id:v2.2.0@sha256:84d20a801692b9635f481522df2672a7aae522726c30953dae52e17fc2696b27
+    container_name: pocket-id
+    restart: always
+    environment:
+      APP_URL: https://${DOMAIN}
+      TRUST_PROXY: true
+      PUID: 1000
+      PGID: 1000
+      ANALYTICS_DISABLED: true
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+    volumes:
+      - ${DIRECTORY}:/app/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/pocket-id.webp
+      - traefik.enable=true
+      - traefik.http.routers.pocket-id.entrypoints=https
+      - traefik.http.routers.pocket-id.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.pocket-id.tls=true
+      - traefik.http.routers.pocket-id.tls.certresolver=desec
+      - traefik.http.services.pocket-id.loadbalancer.server.port=1411
+    expose:
+      - 1411
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

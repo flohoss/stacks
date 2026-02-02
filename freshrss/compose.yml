@@ -1,0 +1,39 @@
+services:
+  freshrss:
+    image: freshrss/freshrss:1.28.1@sha256:9100f649f5c946f589f54cdb9be7a65996528f48f691ef90eb262a0e06e5a522
+    container_name: freshrss
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+    environment:
+      TZ: Europe/Berlin
+      BASE_URL: https://${DOMAIN}
+      CRON_MIN: '2,32'
+      OIDC_ENABLED: 1
+      OIDC_PROVIDER_METADATA_URL: ${OIDC_PROVIDER_METADATA_URL}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      OIDC_SCOPES: openid email profile
+      OIDC_X_FORWARDED_HEADERS: X-Forwarded-Proto X-Forwarded-Host
+      OIDC_REMOTE_USER_CLAIM: preferred_username
+    volumes:
+      - ${DIRECTORY}/data:/var/www/FreshRSS/data
+      - ${DIRECTORY}/extensions:/var/www/FreshRSS/extensions
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/freshrss.webp
+      - traefik.enable=true
+      - traefik.http.routers.freshrss.entrypoints=https
+      - traefik.http.routers.freshrss.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.freshrss.tls=true
+      - traefik.http.routers.freshrss.tls.certresolver=desec
+    expose:
+      - 8080
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
