@@ -6,10 +6,8 @@ A collection of self-hosted Docker Compose stacks with automated dependency upda
 
 This repository uses [Renovate](https://github.com/renovatebot/renovate) to automatically:
 
-- Check for new Docker image versions daily at 15:00 UTC
+- Check for new Docker image versions daily
 - Pin image digests for security and reproducibility
-
-Renovate configuration: [renovate.js](renovate.js)
 
 ## Unraid Compatibility
 
