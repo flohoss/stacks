@@ -49,3 +49,9 @@ services:
 networks:
   proxy:
     external: true
+
+# Example EXTRA_FLAGS:
+# --entrypoints.https.http.tls.domains[0].main=*.unjx.de
+# --providers.docker.defaultRule="Host(`{{ lower (first (splitList \"-\" .Name) | default .Name) }}.unjx.de`)"
+# --log.level=DEBUG
+# --api.dashboard=true
