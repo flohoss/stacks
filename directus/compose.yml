@@ -1,6 +1,6 @@
 services:
   directus:
-    image: directus/directus:11.14.1@sha256:ed77e528106e51433ecf513755b13c1be1697daa5c63a264345e778f5f141285
+    image: directus/directus:11.15.0@sha256:8c6fdc0bfc159712ad99670d07117106863df95d6995eef0ffc32dc844e1479f
     container_name: directus
     restart: always
     environment:
