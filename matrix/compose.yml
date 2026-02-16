@@ -150,7 +150,7 @@ services:
       - net
 
   mautrix-whatsapp:
-    image: dock.mau.dev/mautrix/whatsapp:v0.2601.0@sha256:cbd395cc939cdfab127a9bac1d090a12cb10a3f24046c3324c1ba4bc5f6c4b72
+    image: dock.mau.dev/mautrix/whatsapp:v0.2602.0@sha256:07fca07f8746c09e6d5f486d002e638da014d0a134e053e2ed7af9875053104d
     container_name: mautrix-whatsapp
     restart: always
     depends_on:
