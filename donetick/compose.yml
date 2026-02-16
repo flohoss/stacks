@@ -1,0 +1,29 @@
+services:
+  donetick:
+    image: donetick/donetick:v0.1.74@sha256:5e6e2afe0f23c16f791ce52ef22c1914e39673f889e85ba4517b7e6ad4fbc2f0
+    container_name: donetick
+    restart: always
+    environment:
+      DT_ENV: selfhosted
+      DT_SQLITE_PATH: /donetick-data/donetick.db
+      TZ: Europe/Berlin
+    volumes:
+      - ${DIRECTORY}/data:/donetick-data
+      - ${DIRECTORY}/config:/config
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/donetick.webp
+      - traefik.enable=true
+      - traefik.http.routers.donetick.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.donetick.entrypoints=https
+      - traefik.http.routers.donetick.tls=true
+      - traefik.http.routers.donetick.tls.certresolver=desec
+    expose:
+      - 2021
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
