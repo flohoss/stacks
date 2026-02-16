@@ -6,13 +6,21 @@ services:
     environment:
       TZ: Europe/Berlin
       DT_IS_USER_CREATION_DISABLED: ${DISABLE_REGISTRATION:-true}
+      DT_IS_DONE_TICK_DOT_COM: ${SELFHOSTED:-true}
       DT_ENV: selfhosted
       DT_DATABASE_TYPE: sqlite
       DT_SQLITE_PATH: /donetick-data/donetick.db
       DT_JWT_SECRET: ${JWT_SECRET}
+      DT_SERVER_SERVE_FRONTEND: true
+      DT_OAUTH2_CLIENT_ID: ${CLIENT_ID}
+      DT_OAUTH2_CLIENT_SECRET: ${CLIENT_SECRET}
+      DT_OAUTH2_REDIRECT_URL: https://${DOMAIN}/auth/callback
+      DT_OAUTH2_AUTH_URL: ${AUTH_URL}
+      DT_OAUTH2_TOKEN_URL: ${TOKEN_URL}
+      DT_OAUTH2_USER_INFO_URL: ${USER_INFO_URL}
+      DT_OAUTH2_NAME: OIDC
     volumes:
       - ${DIRECTORY}/data:/donetick-data
-      - ${DIRECTORY}/config:/config
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.webui=https://${DOMAIN}
