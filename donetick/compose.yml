@@ -4,9 +4,11 @@ services:
     container_name: donetick
     restart: always
     environment:
+      TZ: Europe/Berlin
       DT_ENV: selfhosted
       DT_SQLITE_PATH: /donetick-data/donetick.db
-      TZ: Europe/Berlin
+      DONETICK_DISABLE_SIGNUP: true
+      DT_JWT_SECRET: ${JWT_SECRET}
     volumes:
       - ${DIRECTORY}/data:/donetick-data
       - ${DIRECTORY}/config:/config
