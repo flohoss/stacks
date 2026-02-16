@@ -5,9 +5,10 @@ services:
     restart: always
     environment:
       TZ: Europe/Berlin
+      DT_IS_USER_CREATION_DISABLED: ${DISABLE_REGISTRATION:-true}
       DT_ENV: selfhosted
+      DT_DATABASE_TYPE: sqlite
       DT_SQLITE_PATH: /donetick-data/donetick.db
-      DONETICK_DISABLE_SIGNUP: true
       DT_JWT_SECRET: ${JWT_SECRET}
     volumes:
       - ${DIRECTORY}/data:/donetick-data
