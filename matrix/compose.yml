@@ -1,6 +1,6 @@
 services:
   matrix:
-    image: matrixdotorg/synapse:v1.148.0@sha256:e7f0bdf2b570de33b4f2c61126bcc4e41e4bd840b9a57726353231812f644571
+    image: matrixdotorg/synapse:v1.149.0@sha256:f223f5fc532600801284fededefca82288fb71551bf4fcc89cd0b3363a3461cc
     container_name: matrix
     restart: always
     extra_hosts:
