@@ -33,7 +33,6 @@ services:
   affine-migration:
     image: ghcr.io/toeverything/affine:0.26.3@sha256:725aaceb0ed94d4b832ae6ef9414503291c9b2b4f60bd6f3c7eef571b6149add
     container_name: affine-migration
-    restart: always
     command: ['sh', '-c', 'node ./scripts/self-host-predeploy.js']
     depends_on:
       affine-db:
