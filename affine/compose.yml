@@ -11,6 +11,10 @@ services:
       affine-migration:
         condition: service_completed_successfully
     environment:
+      AFFINE_REVISION: stable
+      AFFINE_SERVER_HTTPS: true
+      AFFINE_SERVER_HOST: ${DOMAIN}
+      AFFINE_SERVER_EXTERNAL_URL: https://${DOMAIN}
       REDIS_SERVER_HOST: affine-redis
       DATABASE_URL: postgresql://user:password@affine-db:5432/db
       AFFINE_INDEXER_ENABLED: false
@@ -40,6 +44,10 @@ services:
       affine-redis:
         condition: service_healthy
     environment:
+      AFFINE_REVISION: stable
+      AFFINE_SERVER_HTTPS: true
+      AFFINE_SERVER_HOST: ${DOMAIN}
+      AFFINE_SERVER_EXTERNAL_URL: https://${DOMAIN}
       REDIS_SERVER_HOST: affine-redis
       DATABASE_URL: postgresql://user:password@affine-db:5432/db
       AFFINE_INDEXER_ENABLED: false
