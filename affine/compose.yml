@@ -1,0 +1,105 @@
+services:
+  affine:
+    image: ghcr.io/toeverything/affine:0.26.3@sha256:725aaceb0ed94d4b832ae6ef9414503291c9b2b4f60bd6f3c7eef571b6149add
+    container_name: affine
+    restart: always
+    depends_on:
+      affine-db:
+        condition: service_healthy
+      affine-redis:
+        condition: service_healthy
+      affine-migration:
+        condition: service_completed_successfully
+    environment:
+      REDIS_SERVER_HOST: redis
+      DATABASE_URL: postgresql://user:password@affine-db:5432/db
+      AFFINE_INDEXER_ENABLED: false
+    volumes:
+      - ${DIRECTORY}/storage:/root/.affine/storage
+      - ${DIRECTORY}/config:/root/.affine/config
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/affine.webp
+      - traefik.enable=true
+      - traefik.http.routers.affine.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.affine.entrypoints=https
+    expose:
+      - 3010
+    networks:
+      - proxy
+      - net
+
+  affine-migration:
+    image: ghcr.io/toeverything/affine:0.26.3@sha256:725aaceb0ed94d4b832ae6ef9414503291c9b2b4f60bd6f3c7eef571b6149add
+    container_name: affine-migration
+    restart: always
+    command: ['sh', '-c', 'node ./scripts/self-host-predeploy.js']
+    depends_on:
+      affine-db:
+        condition: service_healthy
+      affine-redis:
+        condition: service_healthy
+    environment:
+      REDIS_SERVER_HOST: redis
+      DATABASE_URL: postgresql://user:password@affine-db:5432/db
+      AFFINE_INDEXER_ENABLED: false
+    volumes:
+      - ${DIRECTORY}/storage:/root/.affine/storage
+      - ${DIRECTORY}/config:/root/.affine/config
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/affine.webp
+    networks:
+      - net
+
+  affine-db:
+    image: pgvector/pgvector:0.8.2-pg16@sha256:7d400e340efb42f4d8c9c12c6427adb253f726881a9985d2a471bf0eed824dff
+    container_name: affine-db
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+    volumes:
+      - db:/var/lib/postgresql/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
+    expose:
+      - 5432
+    networks:
+      - net
+
+  affine-redis:
+    image: redis:7.4.5-alpine3.21@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
+    container_name: affine-redis
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping || exit 1']
+    volumes:
+      - redis:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
+    expose:
+      - 6379
+    networks:
+      - net
+
+networks:
+  proxy:
+    external: true
+  net:
+    external: false
+
+volumes:
+  db: {}
+  redis: {}

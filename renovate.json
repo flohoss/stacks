@@ -32,6 +32,11 @@
     },
     {
       "matchDatasources": ["docker"],
+      "matchPackageNames": ["pgvector/pgvector"],
+      "allowedVersions": "*-pg16*"
+    },
+    {
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/immich-app/immich-machine-learning", "ghcr.io/immich-app/immich-server"],
       "groupName": "Immich",
       "groupSlug": "immich",
