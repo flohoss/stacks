@@ -27,7 +27,7 @@ services:
       - traefik.http.routers.bookstack.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.bookstack.entrypoints=https
     expose:
-      - 3010
+      - 80
     networks:
       - proxy
       - net
@@ -43,6 +43,7 @@ services:
       timeout: 5s
       retries: 10
     environment:
+      TZ: Europe/Berlin
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: db
       MYSQL_USER: user
