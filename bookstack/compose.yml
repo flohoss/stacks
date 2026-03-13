@@ -1,6 +1,6 @@
 services:
   bookstack:
-    image: lscr.io/linuxserver/bookstack:25.12.9@sha256:2754abddf7c3f0a7b662e6c028887755015fa4d6851e3399e85fabb10c7b883b
+    image: lscr.io/linuxserver/bookstack:25.12.20251224@sha256:597cd4fc121f1d74c40e93cf7b0d5e1b3fc61af486a87cd65e2f86b0c0a5d914
     container_name: bookstack
     restart: always
     depends_on:
