@@ -1,0 +1,87 @@
+services:
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline:1.5.0@sha256:f053574bb63b82846ec3cd7d89ab4b3019073b4dd25fda45f5cdcccc990a7401
+    container_name: outline
+    restart: always
+    depends_on:
+      outline-db:
+        condition: service_healthy
+      outline-redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      URL: https://${DOMAIN}
+      SECRET_KEY: ${SECRET_KEY}
+      UTILS_SECRET: ${UTILS_SECRET}
+      DEFAULT_LANGUAGE: de_DE
+      DATABASE_URL: postgres://user:password@outline-db:5432/db
+      REDIS_URL: redis://outline-redis:6379
+      FORCE_HTTPS: true
+      SMTP_SERVICE: ${SMTP_SERVICE}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM}
+      LOG_LEVEL: warn
+    volumes:
+      - ${DIRECTORY}:/var/lib/outline/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/outline.webp
+      - traefik.enable=true
+      - traefik.http.routers.outline.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.outline.entrypoints=https
+    expose:
+      - 3000
+    networks:
+      - proxy
+      - net
+
+  outline-db:
+    image: postgres:17.7-alpine3.21@sha256:5bcb5623bb6999b2f7fbd2109f0bfc1f144d138b52ca35ede95d644d93585c2f
+    container_name: outline-db
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db:/var/lib/postgresql/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
+    expose:
+      - 5432
+    networks:
+      - net
+
+  outline-redis:
+    image: redis:7.4.5-alpine3.21@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
+    container_name: outline-redis
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping || exit 1']
+    volumes:
+      - redis:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
+    expose:
+      - 6379
+    networks:
+      - net
+
+networks:
+  proxy:
+    external: true
+  net:
+    external: false
+
+volumes:
+  db: {}
+  redis: {}
