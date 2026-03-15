@@ -22,6 +22,7 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD}
       SMTP_FROM: ${SMTP_FROM}
       LOG_LEVEL: warn
+      PGSSLMODE: disable
     volumes:
       - ${DIRECTORY}:/var/lib/outline/data
     labels:
