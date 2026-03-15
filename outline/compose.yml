@@ -17,10 +17,11 @@ services:
       DATABASE_URL: postgres://user:password@outline-db:5432/db
       REDIS_URL: redis://outline-redis:6379
       FORCE_HTTPS: true
-      SMTP_SERVICE: ${SMTP_SERVICE}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
       SMTP_USERNAME: ${SMTP_USERNAME}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
-      SMTP_FROM: ${SMTP_FROM}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
       LOG_LEVEL: warn
       PGSSLMODE: disable
       FILE_STORAGE: local
