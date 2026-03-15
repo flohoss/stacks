@@ -23,6 +23,8 @@ services:
       SMTP_FROM: ${SMTP_FROM}
       LOG_LEVEL: warn
       PGSSLMODE: disable
+      FILE_STORAGE: local
+      FILE_STORAGE_LOCAL_ROOT_DIR: /var/lib/outline/data
       FILE_STORAGE_UPLOAD_MAX_SIZE: 5242880
     volumes:
       - ${DIRECTORY}:/var/lib/outline/data
