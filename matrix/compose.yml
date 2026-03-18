@@ -104,7 +104,7 @@ services:
       - net
 
   mautrix-signal:
-    image: dock.mau.dev/mautrix/signal:v0.2602.2@sha256:577e37ad5f41bfd72a236e6ab4a1b1b2d4f960890ff0767ed3b0b7cbb6817c29
+    image: dock.mau.dev/mautrix/signal:v0.2603.0@sha256:0e3be8a024395a0e9a28b3d01621bbca302fc4f1cadfd5ae9e3610d41ac2bdc2
     container_name: mautrix-signal
     restart: always
     depends_on:
