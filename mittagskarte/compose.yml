@@ -1,6 +1,6 @@
 services:
   mittagskarte:
-    image: ghcr.io/flohoss/mittagskarte:v0.9.0@sha256:068de4127033178faf7a1d0fa0a93f467c15e8fa21b8060283ef15af54647cdd
+    image: ghcr.io/flohoss/mittagskarte:v1.0.0@sha256:4b8a4557efeb4667af3ace8873d2281304a06069cc0210368d611a3a5ff2fb2d
     container_name: mittagskarte
     restart: always
     deploy:
@@ -12,19 +12,18 @@ services:
           memory: 512M
           cpus: '0.5'
     volumes:
-      - ${DIRECTORY}:/app/config
+      - ${DIRECTORY}:/app/data
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mittagskarte.webp
       - traefik.enable=true
       - traefik.http.routers.mittagskarte.entrypoints=https
-      - traefik.http.routers.mittagskarte.priority=1
       - traefik.http.routers.mittagskarte.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.mittagskarte.tls=true
       - traefik.http.routers.mittagskarte.tls.certresolver=desec
     expose:
-      - 8156
+      - 8090
     networks:
       - proxy
 
