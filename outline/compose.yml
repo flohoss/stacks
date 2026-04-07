@@ -26,7 +26,7 @@ services:
       PGSSLMODE: disable
       FILE_STORAGE: local
       FILE_STORAGE_LOCAL_ROOT_DIR: /var/lib/outline/data
-      FILE_STORAGE_UPLOAD_MAX_SIZE: 5242880
+      FILE_STORAGE_UPLOAD_MAX_SIZE: 20971520
     volumes:
       - ${DIRECTORY}:/var/lib/outline/data
     labels:
