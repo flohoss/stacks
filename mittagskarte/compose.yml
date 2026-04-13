@@ -1,16 +1,16 @@
 services:
   mittagskarte:
-    image: ghcr.io/flohoss/mittagskarte:v1.2.0@sha256:e1b74255d73ae71f83eba29baeee739d734a84631b169509b72698e818a70810
+    image: ghcr.io/flohoss/mittagskarte:v1.2.0@sha256:f41b9f07116aa87ed961b13f7d512b1cd17a408564fed9647c354414e882320a
     container_name: mittagskarte
     restart: always
     deploy:
       resources:
         limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
           memory: 1G
           cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '0.5'
     volumes:
       - ${DIRECTORY}:/app/data
     labels:
