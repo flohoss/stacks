@@ -173,7 +173,7 @@ services:
       - net
 
   mautrix-meta:
-    image: dock.mau.dev/mautrix/meta:v0.2602.0@sha256:3a1e55b0eb86d9841f9382e1b3dd33d768ffcfa9b7d65cdbf672c385f9903ade
+    image: dock.mau.dev/mautrix/meta:v0.2604.0@sha256:080d23a07d08a1055cfa659266bbfc3bf754a8304b95df5c1c6b51de97b79d66
     container_name: mautrix-meta
     restart: always
     depends_on:
