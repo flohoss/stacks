@@ -4,6 +4,8 @@ services:
     container_name: gocron
     restart: always
     hostname: gobackup
+    extra_hosts:
+      - '${EXTRA_HOSTS:-localhost:127.0.0.1}'
     deploy:
       resources:
         limits:
