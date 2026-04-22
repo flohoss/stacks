@@ -4,7 +4,7 @@ services:
     container_name: traefik
     restart: always
     extra_hosts:
-      - '${EXTRA_HOSTS:-}'
+      - '${EXTRA_HOSTS:-localhost:127.0.0.1}'
     command: >
       --global.checkNewVersion=false
       --global.sendAnonymousUsage=false
