@@ -67,7 +67,7 @@ services:
     volumes:
       - db:/var/lib/mysql
     labels:
-      - backup.target=${BACKUP_TARGET:-seafile-db}
+      - backup.target=${BACKUP_TARGET:-seafile}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mariadb.webp
     expose:

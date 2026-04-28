@@ -93,7 +93,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     labels:
-      - backup.target=${BACKUP_TARGET:-matrix-db}
+      - backup.target=${BACKUP_TARGET:-matrix}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
