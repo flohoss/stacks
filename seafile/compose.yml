@@ -1,7 +1,6 @@
 services:
   seafile:
     image: seafileltd/seafile-mc:13.0.21@sha256:1e335e704bb0159bd13f443c9c5ac20e72dd2bb47da3a8ab48be977cf30fc7bd
-    container_name: seafile
     restart: always
     depends_on:
       seafile-db:
@@ -54,7 +53,6 @@ services:
 
   seafile-db:
     image: mariadb:10.11.16@sha256:407fccb51e710f34752c1a3ef9b936d1f55f38d4ac7fa043b3759742d266fd9a
-    container_name: seafile-db
     restart: always
     healthcheck:
       test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect', '--mariadbupgrade', '--innodb_initialized']
@@ -69,6 +67,7 @@ services:
     volumes:
       - db:/var/lib/mysql
     labels:
+      - backup.target=${BACKUP_TARGET:-seafile-db}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mariadb.webp
     expose:
@@ -78,7 +77,6 @@ services:
 
   seafile-redis:
     image: redis:7.4.5-alpine3.21@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
-    container_name: seafile-redis
     restart: always
     healthcheck:
       test: ['CMD-SHELL', 'redis-cli ping || exit 1']
@@ -94,7 +92,6 @@ services:
 
   seadoc:
     image: seafileltd/sdoc-server:2.0.9@sha256:5b1bf5a8bfdb8bc5db957e7faee2220111fd6eff00795eaaf172e2f80bb999a5
-    container_name: seadoc
     restart: always
     depends_on:
       seafile-db:
@@ -123,7 +120,6 @@ services:
 
   collabora:
     image: collabora/code:25.04.9.4.1@sha256:fe49c08c27e102c1877ad4ef2ac1a7bd8ccd2dfaa6641d4533389c204a92bb88
-    container_name: collabora
     restart: always
     cap_add:
       - MKNOD

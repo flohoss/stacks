@@ -1,7 +1,6 @@
 services:
   paperless:
     image: ghcr.io/paperless-ngx/paperless-ngx:2.20.15@sha256:6c86cad803970ea782683a8e80e7403444c5bf3cf70de63b4d3c8e87500db92f
-    container_name: paperless
     restart: always
     depends_on:
       paperless-db:
@@ -45,7 +44,6 @@ services:
 
   paperless-db:
     image: postgres:17.7-alpine3.21@sha256:5bcb5623bb6999b2f7fbd2109f0bfc1f144d138b52ca35ede95d644d93585c2f
-    container_name: paperless-db
     restart: always
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U user -d db']
@@ -59,6 +57,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     labels:
+      - backup.target=${BACKUP_TARGET:-paperless-db}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
@@ -68,7 +67,6 @@ services:
 
   paperless-redis:
     image: redis:7.4.5-alpine3.21@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
-    container_name: paperless-redis
     restart: always
     healthcheck:
       test: ['CMD-SHELL', 'redis-cli ping || exit 1']

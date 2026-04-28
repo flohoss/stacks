@@ -1,7 +1,6 @@
 services:
   godash:
     image: ghcr.io/flohoss/godash:v1.2.7@sha256:210862a05dfdc9a18cbe7c7914ee057fddc4f612233e1b8311e6571f31e4db77
-    container_name: godash
     restart: always
     deploy:
       resources:

@@ -1,7 +1,6 @@
 services:
   matrix:
     image: matrixdotorg/synapse:v1.152.0@sha256:6216aaa0a111fedc007002c0e595b2b913dc7bdfc59442d1e04b72912fa23a9c
-    container_name: matrix
     restart: always
     extra_hosts:
       - '${UNIFIED_PUSH_HOST:-localhost}:${UNIFIED_PUSH_IP:-127.0.0.1}'
@@ -34,7 +33,6 @@ services:
 
   matrix-wellknown:
     image: nginx:1.29.3-alpine3.22@sha256:b3c656d55d7ad751196f21b7fd2e8d4da9cb430e32f646adcf92441b72f82b14
-    container_name: matrix-wellknown
     restart: always
     deploy:
       resources:
@@ -83,7 +81,6 @@ services:
 
   matrix-db:
     image: postgres:17.7-alpine3.21@sha256:5bcb5623bb6999b2f7fbd2109f0bfc1f144d138b52ca35ede95d644d93585c2f
-    container_name: matrix-db
     restart: always
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U user -d db']
@@ -96,6 +93,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     labels:
+      - backup.target=${BACKUP_TARGET:-matrix-db}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
@@ -105,7 +103,6 @@ services:
 
   mautrix-signal:
     image: dock.mau.dev/mautrix/signal:v0.2604.0@sha256:aa3891001893be88ef6f7c692d254a1ed11dbcaf29d3c02e8ed4ddf9df259244
-    container_name: mautrix-signal
     restart: always
     depends_on:
       matrix-db:
@@ -128,7 +125,6 @@ services:
 
   mautrix-telegram:
     image: dock.mau.dev/mautrix/telegram:v0.2604.0@sha256:e274e3bbfd641f59f1b6b82774dce6964babcd571d15e67538457422d765c763
-    container_name: mautrix-telegram
     restart: always
     depends_on:
       matrix-db:
@@ -151,7 +147,6 @@ services:
 
   mautrix-whatsapp:
     image: dock.mau.dev/mautrix/whatsapp:v0.2604.0@sha256:9f28c04c746af9fe8e93163489dae0f4191626e2ca02a9302df62afbeefc9eba
-    container_name: mautrix-whatsapp
     restart: always
     depends_on:
       matrix-db:
@@ -174,7 +169,6 @@ services:
 
   mautrix-meta:
     image: dock.mau.dev/mautrix/meta:v0.2604.0@sha256:080d23a07d08a1055cfa659266bbfc3bf754a8304b95df5c1c6b51de97b79d66
-    container_name: mautrix-meta
     restart: always
     depends_on:
       matrix-db:
