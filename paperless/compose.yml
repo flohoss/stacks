@@ -30,6 +30,7 @@ services:
       - ${DIRECTORY}/media:/usr/src/paperless/media
       - ${DIRECTORY}/consume:/usr/src/paperless/consume
     labels:
+      - backup.target=${BACKUP_TARGET:-paperless}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/paperless-ngx.webp
@@ -57,7 +58,6 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     labels:
-      - backup.target=${BACKUP_TARGET:-paperless}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
