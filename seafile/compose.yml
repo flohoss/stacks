@@ -116,6 +116,7 @@ services:
     expose:
       - 80
     networks:
+      - net
       - proxy
 
   collabora:
