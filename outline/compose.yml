@@ -1,6 +1,6 @@
 services:
   outline:
-    image: docker.getoutline.com/outlinewiki/outline:1.5.0@sha256:f053574bb63b82846ec3cd7d89ab4b3019073b4dd25fda45f5cdcccc990a7401
+    image: outlinewiki/outline:1.5.0@sha256:f053574bb63b82846ec3cd7d89ab4b3019073b4dd25fda45f5cdcccc990a7401
     restart: always
     depends_on:
       outline-db:
