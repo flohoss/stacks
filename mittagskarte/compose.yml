@@ -12,6 +12,7 @@ services:
           cpus: '1.0'
     environment:
       - TZ=Europe/Berlin
+      - EMAIL=${EMAIL}
     volumes:
       - ${DIRECTORY}:/app/data
     labels:
