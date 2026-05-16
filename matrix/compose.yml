@@ -124,7 +124,7 @@ services:
       - net
 
   mautrix-telegram:
-    image: dock.mau.dev/mautrix/telegram:v0.2604.0@sha256:e274e3bbfd641f59f1b6b82774dce6964babcd571d15e67538457422d765c763
+    image: dock.mau.dev/mautrix/telegram:v0.2605.0@sha256:91149cc6acee384f8778db6232c522201c8f9a99e56fa9e12ea8e9bf0d5bbe54
     restart: always
     depends_on:
       matrix-db:
