@@ -168,7 +168,7 @@ services:
       - net
 
   mautrix-meta:
-    image: dock.mau.dev/mautrix/meta:v0.2604.0@sha256:080d23a07d08a1055cfa659266bbfc3bf754a8304b95df5c1c6b51de97b79d66
+    image: dock.mau.dev/mautrix/meta:v0.2605.0@sha256:1149d7df4b329ae936cb80db82687061e67dcc6c720892a6e540dbef70984f9a
     restart: always
     depends_on:
       matrix-db:
