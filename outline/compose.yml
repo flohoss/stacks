@@ -3,9 +3,9 @@ services:
     image: outlinewiki/outline:1.7.1@sha256:361df7040e6f0d7abac768b99f40122197921626a7e69501aabb5fcb496fc1b4
     restart: always
     depends_on:
-      outline-db:
+      db:
         condition: service_healthy
-      outline-redis:
+      redis:
         condition: service_healthy
     environment:
       NODE_ENV: production
@@ -13,8 +13,8 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       UTILS_SECRET: ${UTILS_SECRET}
       DEFAULT_LANGUAGE: de_DE
-      DATABASE_URL: postgres://user:password@outline-db:5432/db
-      REDIS_URL: redis://outline-redis:6379
+      DATABASE_URL: postgres://user:password@db:5432/db
+      REDIS_URL: redis://redis:6379
       FORCE_HTTPS: true
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
@@ -41,7 +41,7 @@ services:
       - proxy
       - net
 
-  outline-db:
+  db:
     image: postgres:17.7-alpine3.21@sha256:5bcb5623bb6999b2f7fbd2109f0bfc1f144d138b52ca35ede95d644d93585c2f
     restart: always
     healthcheck:
@@ -64,7 +64,7 @@ services:
     networks:
       - net
 
-  outline-redis:
+  redis:
     image: redis:7.4.5-alpine3.21@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
     restart: always
     healthcheck:
