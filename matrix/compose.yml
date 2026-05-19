@@ -105,7 +105,7 @@ services:
     image: dock.mau.dev/mautrix/signal:v0.2605.0@sha256:24ac347858e4c522bd1292e8cae344d736840036760944b9abc0d94f1561d41a
     restart: always
     depends_on:
-      db:
+      matrix:
         condition: service_healthy
     deploy:
       resources:
@@ -127,7 +127,7 @@ services:
     image: dock.mau.dev/mautrix/telegram:v0.2605.0@sha256:91149cc6acee384f8778db6232c522201c8f9a99e56fa9e12ea8e9bf0d5bbe54
     restart: always
     depends_on:
-      db:
+      matrix:
         condition: service_healthy
     deploy:
       resources:
@@ -149,7 +149,7 @@ services:
     image: dock.mau.dev/mautrix/whatsapp:v0.2605.0@sha256:d126438cc0eb989c31ff32ab66a95a16d1fc47198eaabcba0fb4f4672e7a3412
     restart: always
     depends_on:
-      db:
+      matrix:
         condition: service_healthy
     deploy:
       resources:
@@ -171,7 +171,7 @@ services:
     image: dock.mau.dev/mautrix/meta:v0.2605.0@sha256:1149d7df4b329ae936cb80db82687061e67dcc6c720892a6e540dbef70984f9a
     restart: always
     depends_on:
-      db:
+      matrix:
         condition: service_healthy
     deploy:
       resources:
