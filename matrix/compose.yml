@@ -45,34 +45,25 @@ services:
     command: |
       /bin/sh -c "
       mkdir -p /tmp/www/.well-known/matrix
-
-      echo '{\"m.homeserver\":{\"base_url\":\"https://${DOMAIN}\"}}' \
-        > /tmp/www/.well-known/matrix/client
-
-      echo '{\"m.server\":\"${DOMAIN}:443\"}' \
-        > /tmp/www/.well-known/matrix/server
-
+      echo '{\"m.homeserver\": {\"base_url\": \"https://${DOMAIN}\"}}' > /tmp/www/.well-known/matrix/client
+      echo '{\"m.server\": \"${DOMAIN}:443\"}' > /tmp/www/.well-known/matrix/server
       cat > /tmp/nginx.conf << 'EOF'
       pid /tmp/nginx.pid;
-
-      events {
-        worker_connections 1024;
-      }
+      events { worker_connections 1024; }
 
       http {
         server {
           listen 8080;
-
+          server_name _;
           location /.well-known/matrix/ {
             root /tmp/www;
             default_type application/json;
-
             add_header Access-Control-Allow-Origin *;
+            try_files \$$uri =404;
           }
         }
       }
       EOF
-
       nginx -c /tmp/nginx.conf -g 'daemon off;'
       "
     labels:
