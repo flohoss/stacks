@@ -2,8 +2,6 @@ services:
   matrix:
     image: matrixdotorg/synapse:v1.154.0@sha256:6ae909ac2d5017824de86b2e06ed1e60ec53ffafcd2322c2f3e30c653ed921fa
     restart: always
-    extra_hosts:
-      - '${UNIFIED_PUSH_HOST:-localhost}:${UNIFIED_PUSH_IP:-127.0.0.1}'
     depends_on:
       db:
         condition: service_healthy
@@ -32,7 +30,7 @@ services:
       - net
 
   matrix-wellknown:
-    image: nginx:1.29.3-alpine3.22@sha256:b3c656d55d7ad751196f21b7fd2e8d4da9cb430e32f646adcf92441b72f82b14
+    image: nginxinc/nginx-unprivileged:1.29.3-alpine3.22@sha256:5aea7cc516b419e3526f47dd1531be31a56a046cfe44754d94f9383e13e2ee99
     restart: always
     deploy:
       resources:
@@ -53,7 +51,7 @@ services:
       events { worker_connections 1024; }
       http {
         server {
-          listen 80;
+          listen 8080;
           server_name _;
           location /.well-known/matrix/ {
             add_header Content-Type application/json;
@@ -76,6 +74,8 @@ services:
       - traefik.http.routers.matrix-wellknown.tls=true
       - traefik.http.routers.matrix-wellknown.tls.certresolver=desec
       - traefik.http.routers.matrix-wellknown.priority=100
+    expose:
+      - 8080
     networks:
       - proxy
 
@@ -102,7 +102,7 @@ services:
       - net
 
   signal:
-    image: dock.mau.dev/mautrix/signal:v0.2605.0@sha256:24ac347858e4c522bd1292e8cae344d736840036760944b9abc0d94f1561d41a
+    image: dock.mau.dev/mautrix/signal:v26.05@sha256:24ac347858e4c522bd1292e8cae344d736840036760944b9abc0d94f1561d41a
     restart: always
     depends_on:
       matrix:
@@ -124,7 +124,7 @@ services:
       - net
 
   telegram:
-    image: dock.mau.dev/mautrix/telegram:v0.2605.0@sha256:91149cc6acee384f8778db6232c522201c8f9a99e56fa9e12ea8e9bf0d5bbe54
+    image: dock.mau.dev/mautrix/telegram:v26.05@sha256:91149cc6acee384f8778db6232c522201c8f9a99e56fa9e12ea8e9bf0d5bbe54
     restart: always
     depends_on:
       matrix:
@@ -146,7 +146,7 @@ services:
       - net
 
   whatsapp:
-    image: dock.mau.dev/mautrix/whatsapp:v0.2605.0@sha256:d126438cc0eb989c31ff32ab66a95a16d1fc47198eaabcba0fb4f4672e7a3412
+    image: dock.mau.dev/mautrix/whatsapp:v26.05@sha256:d126438cc0eb989c31ff32ab66a95a16d1fc47198eaabcba0fb4f4672e7a3412
     restart: always
     depends_on:
       matrix:
@@ -168,7 +168,7 @@ services:
       - net
 
   meta:
-    image: dock.mau.dev/mautrix/meta:v0.2605.1@sha256:ce1fd2cd20c12416a34b1b0a159cc89a38607c99c482d0e3c93ebc3cc37a0cd6
+    image: dock.mau.dev/mautrix/meta:v26.05.1@sha256:ce1fd2cd20c12416a34b1b0a159cc89a38607c99c482d0e3c93ebc3cc37a0cd6
     restart: always
     depends_on:
       matrix:
