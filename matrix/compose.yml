@@ -44,25 +44,37 @@ services:
       SYNAPSE_DOMAIN: ${DOMAIN}
     command: |
       /bin/sh -c "
-      mkdir -p /usr/share/nginx/html/.well-known/matrix
-      echo '{\"m.homeserver\": {\"base_url\": \"https://${DOMAIN}\"}}' > /usr/share/nginx/html/.well-known/matrix/client
-      echo '{\"m.server\": \"${DOMAIN}:443\"}' > /usr/share/nginx/html/.well-known/matrix/server
-      cat > /etc/nginx/nginx.conf << 'EOF'
-      events { worker_connections 1024; }
+      mkdir -p /tmp/www/.well-known/matrix
+
+      echo '{\"m.homeserver\":{\"base_url\":\"https://${DOMAIN}\"}}' \
+        > /tmp/www/.well-known/matrix/client
+
+      echo '{\"m.server\":\"${DOMAIN}:443\"}' \
+        > /tmp/www/.well-known/matrix/server
+
+      cat > /tmp/nginx.conf << 'EOF'
+      pid /tmp/nginx.pid;
+
+      events {
+        worker_connections 1024;
+      }
+
       http {
         server {
           listen 8080;
-          server_name _;
+
           location /.well-known/matrix/ {
-            add_header Content-Type application/json;
+            root /tmp/www;
+            default_type application/json;
+
             add_header Access-Control-Allow-Origin *;
-            root /usr/share/nginx/html;
-            try_files \$$uri =404;
+            try_files \$uri =404;
           }
         }
       }
       EOF
-      nginx -g 'daemon off;'
+
+      nginx -c /tmp/nginx.conf -g 'daemon off;'
       "
     labels:
       - net.unraid.docker.managed=dockhand
