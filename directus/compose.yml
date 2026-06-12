@@ -7,6 +7,7 @@ services:
       DB_CLIENT: 'sqlite3'
       DB_FILENAME: '/directus/database/database.sqlite'
       PUBLIC_URL: 'https://${DOMAIN}'
+      IP_TRUST_PROXY: true
     volumes:
       - ${DIRECTORY}/database:/directus/database
       - ${DIRECTORY}/uploads:/directus/uploads
