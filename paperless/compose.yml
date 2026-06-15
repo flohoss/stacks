@@ -37,6 +37,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.paperless.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.paperless.entrypoints=https
+      - traefik.http.routers.paperless.tls=true
+      - traefik.http.routers.paperless.tls.certresolver=desec
     expose:
       - 8000
     networks:

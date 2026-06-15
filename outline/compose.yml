@@ -35,6 +35,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.outline.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.outline.entrypoints=https
+      - traefik.http.routers.outline.tls=true
+      - traefik.http.routers.outline.tls.certresolver=desec
     expose:
       - 3000
     networks:

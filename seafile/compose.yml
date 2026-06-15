@@ -45,6 +45,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.seafile.rule=Host(`${SEAFILE_SERVER_HOSTNAME}`)
       - traefik.http.routers.seafile.entrypoints=https
+      - traefik.http.routers.seafile.tls=true
+      - traefik.http.routers.seafile.tls.certresolver=desec
     expose:
       - 80
     networks:
@@ -113,6 +115,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.seadoc.rule=Host(`${SEADOC_SERVER_HOSTNAME}`)
       - traefik.http.routers.seadoc.entrypoints=https
+      - traefik.http.routers.seadoc.tls=true
+      - traefik.http.routers.seadoc.tls.certresolver=desec
     expose:
       - 80
     networks:
@@ -137,6 +141,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.collabora.rule=Host(`${COLLABORA_SERVER_HOSTNAME}`)
       - traefik.http.routers.collabora.entrypoints=https
+      - traefik.http.routers.collabora.tls=true
+      - traefik.http.routers.collabora.tls.certresolver=desec
     expose:
       - 9980
     networks:

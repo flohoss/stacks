@@ -11,6 +11,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.vaultwarden.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.vaultwarden.entrypoints=https
+      - traefik.http.routers.vaultwarden.tls=true
+      - traefik.http.routers.vaultwarden.tls.certresolver=desec
     expose:
       - 80
     networks:
