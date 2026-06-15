@@ -1,5 +1,5 @@
 services:
-  pdf:
+  bentopdf:
     image: ghcr.io/alam00000/bentopdf:2.8.5@sha256:2d867aacb8ab5b196d00ee86944b1899d09d72df355384c5e15cf974737963a0
     restart: always
     environment:
@@ -9,10 +9,10 @@ services:
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/bentopdf.webp
       - traefik.enable=true
-      - traefik.http.routers.pdf.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.pdf.entrypoints=https
-      - traefik.http.routers.pdf.tls=true
-      - traefik.http.routers.pdf.tls.certresolver=desec
+      - traefik.http.routers.bentopdf.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.bentopdf.entrypoints=https
+      - traefik.http.routers.bentopdf.tls=true
+      - traefik.http.routers.bentopdf.tls.certresolver=desec
     expose:
       - 8080
     networks:
