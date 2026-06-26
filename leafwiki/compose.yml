@@ -1,6 +1,6 @@
 services:
   leafwiki:
-    image: ghcr.io/perber/leafwiki:v0.11.1@sha256:7f2949f733c17c081d3fbda9050b88baf915abd6704ad82d620c491335457d8f
+    image: ghcr.io/perber/leafwiki:v0.11.2@sha256:efb611fc6e6d7b9e6ca00362803725af54f90cb88bb9c4302de48224095875e7
     restart: always
     user: 1000:1000
     environment:
