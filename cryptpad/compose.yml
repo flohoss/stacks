@@ -21,6 +21,7 @@ services:
       - ${DIRECTORY}/onlyoffice/dist:/cryptpad/www/common/onlyoffice/dist
       - ${DIRECTORY}/onlyoffice/conf:/cryptpad/onlyoffice-conf
     labels:
+      - backup.target=${BACKUP_TARGET:-cryptpad}
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/cryptpad.webp
