@@ -139,3 +139,4 @@ networks:
 volumes:
   db: {}
   redis: {}
+  seadoc: {}
