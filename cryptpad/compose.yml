@@ -1,6 +1,6 @@
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:latest"
+    image: 'cryptpad/cryptpad:version-2026.5.1@sha256:1f89dcdd28c1375f675e47b1d0cf07a51f3e9a07a79dc93c8cddb3295b98a34d'
     restart: always
     ulimits:
       nofile:
@@ -26,14 +26,10 @@ services:
       - traefik.http.routers.cryptpad.entrypoints=https
       - traefik.http.routers.cryptpad.tls=true
       - traefik.http.routers.cryptpad.tls.certresolver=desec
-      - traefik.http.routers.cryptpad.service=cryptpad
-      - traefik.http.services.cryptpad.loadbalancer.server.port=3000
       - traefik.http.routers.cryptpad-sandbox.rule=Host(`${SANDBOX_DOMAIN}`)
       - traefik.http.routers.cryptpad-sandbox.entrypoints=https
       - traefik.http.routers.cryptpad-sandbox.tls=true
       - traefik.http.routers.cryptpad-sandbox.tls.certresolver=desec
-      - traefik.http.routers.cryptpad-sandbox.service=cryptpad-sandbox
-      - traefik.http.services.cryptpad-sandbox.loadbalancer.server.port=3000
     expose:
       - 3000
     networks:
