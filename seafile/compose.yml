@@ -57,7 +57,14 @@ services:
     image: mariadb:10.11.18@sha256:5a5c675881ef3fd1c1da9b0a3bfd6ee82edbe39cd9e32e06be18034c37235e0e
     restart: always
     healthcheck:
-      test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect', '--mariadbupgrade', '--innodb_initialized']
+      test:
+        [
+          'CMD',
+          '/usr/local/bin/healthcheck.sh',
+          '--connect',
+          '--mariadbupgrade',
+          '--innodb_initialized',
+        ]
       interval: 20s
       start_period: 30s
       timeout: 5s
@@ -123,31 +130,6 @@ services:
       - net
       - proxy
 
-  collabora:
-    image: collabora/code:26.04.1.4.1@sha256:75859dc9f9084d1877ce36cf96ec86600f495bade33289c9cbc27e0a0ee23b81
-    restart: always
-    cap_add:
-      - MKNOD
-    environment:
-      TZ: Europe/Berlin
-      server_name: ${COLLABORA_SERVER_HOSTNAME}
-      aliasgroup1: https://${SEAFILE_SERVER_HOSTNAME}:443
-      DONT_GEN_SSL_CERT: 'true'
-      extra_params: --o:ssl.enable=false --o:ssl.termination=true
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.webui=https://${COLLABORA_SERVER_HOSTNAME}
-      - net.unraid.docker.icon=https://www.collaboraonline.com//wp-content/uploads/2019/01/CP-icon-150x150.png
-      - traefik.enable=true
-      - traefik.http.routers.collabora.rule=Host(`${COLLABORA_SERVER_HOSTNAME}`)
-      - traefik.http.routers.collabora.entrypoints=https
-      - traefik.http.routers.collabora.tls=true
-      - traefik.http.routers.collabora.tls.certresolver=desec
-    expose:
-      - 9980
-    networks:
-      - proxy
-
 networks:
   proxy:
     external: true
@@ -157,4 +139,3 @@ networks:
 volumes:
   db: {}
   redis: {}
-  seadoc: {}

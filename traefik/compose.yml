@@ -41,9 +41,9 @@ services:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/traefik.webp
     ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
     networks:
       - proxy
 
