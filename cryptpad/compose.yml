@@ -12,6 +12,8 @@ services:
       CPAD_CONF: /cryptpad/config/config.js
       CPAD_INSTALL_ONLYOFFICE: true
     volumes:
+      - ${DIRECTORY}/block:/cryptpad/block
+      - ${DIRECTORY}/blob:/cryptpad/blob
       - ${DIRECTORY}/data:/cryptpad/data
       - ${DIRECTORY}/files:/cryptpad/datastore
       - ${DIRECTORY}/config.js:/cryptpad/config/config.js
