@@ -1,0 +1,40 @@
+services:
+  cryptpad:
+    image: "cryptpad/cryptpad:latest"
+    restart: always
+    ulimits:
+      nofile:
+        soft: 1000000
+        hard: 1000000
+    environment:
+      CPAD_MAIN_DOMAIN: https://${DOMAIN}
+      CPAD_SANDBOX_DOMAIN: https://${SANDBOX_DOMAIN}
+      CPAD_CONF: /cryptpad/config/config.js
+      CPAD_INSTALL_ONLYOFFICE: true
+    volumes:
+      - ${DIRECTORY}/data:/cryptpad/data
+      - ${DIRECTORY}/files:/cryptpad/datastore
+      - ${DIRECTORY}/config.js:/cryptpad/config/config.js
+      - ${DIRECTORY}/onlyoffice/dist:/cryptpad/www/common/onlyoffice/dist
+      - ${DIRECTORY}/onlyoffice/conf:/cryptpad/onlyoffice-conf
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/cryptpad.webp
+      - traefik.enable=true
+      - traefik.http.routers.cryptpad.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.cryptpad.entrypoints=https
+      - traefik.http.routers.cryptpad.tls=true
+      - traefik.http.routers.cryptpad.tls.certresolver=desec
+      - traefik.http.routers.cryptpad-sandbox.rule=Host(`${SANDBOX_DOMAIN}`)
+      - traefik.http.routers.cryptpad-sandbox.entrypoints=https
+      - traefik.http.routers.cryptpad-sandbox.tls=true
+      - traefik.http.routers.cryptpad-sandbox.tls.certresolver=desec
+    expose:
+      - 3000
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
