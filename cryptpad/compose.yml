@@ -26,10 +26,13 @@ services:
       - traefik.http.routers.cryptpad.entrypoints=https
       - traefik.http.routers.cryptpad.tls=true
       - traefik.http.routers.cryptpad.tls.certresolver=desec
+      - traefik.http.services.cryptpad.loadbalancer.server.port=3000
       - traefik.http.routers.cryptpad-sandbox.rule=Host(`${SANDBOX_DOMAIN}`)
       - traefik.http.routers.cryptpad-sandbox.entrypoints=https
       - traefik.http.routers.cryptpad-sandbox.tls=true
       - traefik.http.routers.cryptpad-sandbox.tls.certresolver=desec
+      - traefik.http.routers.cryptpad-sandbox.service=cryptpad-sandbox
+      - traefik.http.services.cryptpad-sandbox.loadbalancer.server.port=3000
     expose:
       - 3000
     networks:
