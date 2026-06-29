@@ -28,7 +28,7 @@ services:
       --certificatesresolvers.desec.acme.dnschallenge.propagation.disableanschecks=true
       --certificatesresolvers.desec.acme.dnschallenge.delaybeforecheck=300
       --log.level=ERROR
-      --api.dashboard=false
+      --api.dashboard=true
       --serversTransport.insecureSkipVerify=true
       ${TRAEFIK_EXTRA_FLAGS:-}
     environment:
@@ -40,8 +40,9 @@ services:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/traefik.webp
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
     networks:
       - proxy
 
