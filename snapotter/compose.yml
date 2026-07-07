@@ -1,6 +1,6 @@
 services:
   snapotter:
-    image: snapotter/snapotter:1.17.2@sha256:9aab3b8946cc4232e59aa8a293fe7829e17f1e575d933f210693667800187179
+    image: snapotter/snapotter:2.0.0@sha256:de55c9279b067ea0bb5bfc7755dde6f72e727c8e1326629d1fa927cfbe6e3712
     restart: always
     environment:
       TZ: Europe/Berlin
