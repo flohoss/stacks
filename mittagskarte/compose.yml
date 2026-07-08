@@ -11,8 +11,15 @@ services:
           memory: 1G
           cpus: '1.0'
     environment:
-      - TZ=Europe/Berlin
-      - EMAIL=${EMAIL}
+      - IMPRINT_EMAIL=${IMPRINT_EMAIL}
+      - APP_URL=https://${DOMAIN}
+      - SMTP_SENDER_ADDRESS=${SMTP_SENDER_ADDRESS}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SUPERUSER_EMAIL=${SUPERUSER_EMAIL}
+      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
     volumes:
       - ${DIRECTORY}:/app/data
     labels:
