@@ -1,6 +1,6 @@
 services:
   mittagskarte:
-    image: ghcr.io/flohoss/mittagskarte:v2.0.0@sha256:12bff4328f70d30084c17dc2c4e41e89784d7192082947f3803ebef4831b98cd
+    image: ghcr.io/flohoss/mittagskarte:v2.0.0@sha256:0e56fd2d8c610f68c46215a0a6119371ad15a6704f8cadde73c971678927e003
     restart: always
     environment:
       - IMPRINT_EMAIL=${IMPRINT_EMAIL}
