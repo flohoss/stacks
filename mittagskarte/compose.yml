@@ -2,14 +2,6 @@ services:
   mittagskarte:
     image: ghcr.io/flohoss/mittagskarte:v1.9.1@sha256:7769ccb8d94ee44bad72827cb54382a39da297c6faa22265a9f515d0f239a898
     restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-          cpus: '2.0'
-        reservations:
-          memory: 1G
-          cpus: '1.0'
     environment:
       - IMPRINT_EMAIL=${IMPRINT_EMAIL}
       - APP_URL=https://${DOMAIN}
@@ -35,7 +27,31 @@ services:
       - 8090
     networks:
       - proxy
+      - net
+
+  snapotter:
+    image: snapotter/snapotter:2.1.0@sha256:d2cfc667e6b51b098c484eda39c14a6fd205409769f6e55800b59853791734d1
+    restart: always
+    environment:
+      TZ: Europe/Berlin
+      AUTH_ENABLED: false
+      LOG_LEVEL: warn
+      DEFAULT_THEME: dark
+    volumes:
+      - snapotter:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/snapotter.webp
+    ports:
+      - '1349:1349'
+    networks:
+      - net
 
 networks:
   proxy:
     external: true
+  net:
+    external: false
+
+volumes:
+  snapotter: {}
