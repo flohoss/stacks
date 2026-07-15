@@ -1,0 +1,29 @@
+services:
+  actual-budget:
+    image: actualbudget/actual-server:26.7.0@sha256:e18b7fbfec6157a368fad4146563f397502e9da70a120aeaeac63b4977405d1c
+    restart: always
+    volumes:
+      - ${DIRECTORY}:/data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/actual-budget.webp
+      - traefik.enable=true
+      - traefik.http.routers.actual-budget.entrypoints=https
+      - traefik.http.routers.actual-budget.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.actual-budget.tls=true
+      - traefik.http.routers.actual-budget.tls.certresolver=desec
+    healthcheck:
+      test: ['CMD-SHELL', 'node scripts/health-check.js']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    expose:
+      - 5006
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
