@@ -12,6 +12,7 @@ services:
       FORGEJO__database__NAME: db
       FORGEJO__database__USER: user
       FORGEJO__database__PASSWD: password
+      FORGEJO__security__REVERSE_PROXY_TRUSTED_PROXIES: ${TRUSTED_PROXIES:-172.18.0.0/16}
     volumes:
       - ${DIRECTORY}/data:/data
     labels:
