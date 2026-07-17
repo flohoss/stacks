@@ -35,8 +35,9 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["pgvector/pgvector"],
-      "allowedVersions": "*-pg16*"
+      "matchPackageNames": ["cryptpad/cryptpad"],
+      "versioning": "regex:^(?<version>\d+\.\d+\.\d+)$",
+      "extractVersion": "^version-(?<version>.+)$"
     },
     {
       "matchDatasources": ["docker"],
