@@ -16,7 +16,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["redis"],
-      "allowedVersions": "7.x"
+      "allowedVersions": "8.x"
     },
     {
       "matchDatasources": ["docker"],
@@ -36,7 +36,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["cryptpad/cryptpad"],
-      "versioning": "regex:^(?<version>\d+\.\d+\.\d+)$",
+      "versioning": "regex:^(?<version>\\d+\\.\\d+\\.\\d+)$",
       "extractVersion": "^version-(?<version>.+)$"
     },
     {
