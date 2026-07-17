@@ -17,8 +17,8 @@ services:
       DB_HOSTNAME: db
       REDIS_HOSTNAME: redis
     volumes:
-      - ${DATA_DIR}:/usr/src/app/upload
-      - ${NEW_DATA_DIR}:/data
+      - ${DATA_DIR}:/data
+      - ${OLD_DATA_DIR}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     labels:
       - net.unraid.docker.managed=dockhand
