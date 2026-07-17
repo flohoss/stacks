@@ -30,11 +30,6 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["mongo"],
-      "allowedVersions": "6.x"
-    },
-    {
-      "matchDatasources": ["docker"],
       "matchPackageNames": ["cryptpad/cryptpad"],
       "versioning": "regex:^(?<version>\\d+\\.\\d+\\.\\d+)$",
       "extractVersion": "^version-(?<version>.+)$"
