@@ -85,7 +85,7 @@ services:
       - net
 
   redis:
-    image: redis:7.4.9@sha256:a8f08480e1f88f2647fed492d1178c06abb0d0c1fbf02c682a61e2f483fb3954
+    image: redis:8.8.0@sha256:234c902a2db49461a129e2d4aeff85b28cf20187ed274a67f6e50995fa713c7b
     restart: always
     healthcheck:
       test: ['CMD-SHELL', 'redis-cli ping || exit 1']
