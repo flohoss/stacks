@@ -16,6 +16,7 @@ services:
       DB_DATABASE_NAME: db
       DB_HOSTNAME: db
       REDIS_HOSTNAME: redis
+      IMMICH_MEDIA_LOCATION: /data
     volumes:
       - ${DATA_DIR}:/data
       - /etc/localtime:/etc/localtime:ro
