@@ -31,7 +31,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["cryptpad/cryptpad"],
-      "versioning": "regex:^(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
       "extractVersion": "^version-(?<version>.+)$"
     },
     {
