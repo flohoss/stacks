@@ -1,6 +1,6 @@
 services:
   godash:
-    image: ghcr.io/flohoss/godash:v1.4.0@sha256:9642382f8b14a01183d551058bea33d21c1ff8aba0eda5c300e5a874ad187856
+    image: ghcr.io/flohoss/godash:v1.4.1@sha256:d9e3e0d1ba57a640b3d0e352ff85ba73aa81378a5c55fc44fb30338d52a71975
     restart: always
     deploy:
       resources:
