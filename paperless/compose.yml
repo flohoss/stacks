@@ -9,6 +9,7 @@ services:
         condition: service_healthy
     environment:
       PAPERLESS_REDIS: redis://redis:6379
+      PAPERLESS_DBENGINE: postgresql
       PAPERLESS_DBHOST: db
       PAPERLESS_DBNAME: db
       PAPERLESS_DBUSER: user
@@ -24,6 +25,9 @@ services:
       PAPERLESS_APPS: 'allauth.socialaccount.providers.openid_connect'
       PAPERLESS_SOCIALACCOUNT_PROVIDERS: '${SOCIALACCOUNT_PROVIDERS}'
       PAPERLESS_DISABLE_REGULAR_LOGIN: ${DISABLE_REGULAR_LOGIN}
+      PAPERLESS_SECRET_KEY: ${SECRET_KEY}
+      PAPERLESS_CONSUMER_DELETE_DUPLICATES: true
+      PAPERLESS_TRUSTED_PROXIES: ${TRUSTED_PROXIES}
     volumes:
       - ${DIRECTORY}/data:/usr/src/paperless/data
       - ${DIRECTORY}/export:/usr/src/paperless/export
