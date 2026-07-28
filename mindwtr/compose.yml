@@ -1,6 +1,6 @@
 services:
   mindwtr-cloud:
-    image: ghcr.io/dongdongbh/mindwtr-cloud:latest
+    image: ghcr.io/dongdongbh/mindwtr-cloud:1.1.5@sha256:a65a55031c64865c1637c6896c34287f6222302ef17644d992009cc30581f66c
     restart: always
     deploy:
       resources:
@@ -40,7 +40,7 @@ services:
       - proxy
 
   mindwtr-app:
-    image: ghcr.io/dongdongbh/mindwtr-app:latest
+    image: ghcr.io/dongdongbh/mindwtr-app:1.1.5@sha256:b02da10887c840248c73068911fd41d43d6cc3cf403dcc524150afa1eb9de542
     restart: always
     deploy:
       resources:
