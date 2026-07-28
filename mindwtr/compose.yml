@@ -51,6 +51,8 @@ services:
       - traefik.http.routers.mindwtr.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.mindwtr.tls=true
       - traefik.http.routers.mindwtr.tls.certresolver=desec
+      - traefik.http.routers.mindwtr.service=mindwtr
+      - traefik.http.services.mindwtr.loadbalancer.server.port=5173
     expose:
       - 5173
     networks:
