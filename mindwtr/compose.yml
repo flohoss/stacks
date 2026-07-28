@@ -2,6 +2,11 @@ services:
   mindwtr-cloud:
     image: ghcr.io/dongdongbh/mindwtr-cloud:latest
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: '512m'
     healthcheck:
       test:
         [
@@ -29,6 +34,11 @@ services:
   mindwtr-app:
     image: ghcr.io/dongdongbh/mindwtr-app:latest
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: '512m'
     depends_on:
       mindwtr-cloud:
         condition: service_healthy

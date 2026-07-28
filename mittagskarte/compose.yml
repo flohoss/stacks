@@ -2,6 +2,11 @@ services:
   mittagskarte:
     image: ghcr.io/flohoss/mittagskarte:v2.0.3@sha256:4a8ca10291d855da13285f012bb80462dec391aa5436f2e056b0ba9c2d167061
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: '512m'
     environment:
       - IMPRINT_EMAIL=${IMPRINT_EMAIL}
       - APP_URL=https://${DOMAIN}
@@ -32,6 +37,11 @@ services:
   snapotter:
     image: snapotter/snapotter:2.1.0@sha256:d2cfc667e6b51b098c484eda39c14a6fd205409769f6e55800b59853791734d1
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: '1g'
     environment:
       TZ: Europe/Berlin
       AUTH_ENABLED: false
