@@ -22,7 +22,7 @@ services:
       MINDWTR_CLOUD_AUTH_TOKENS: ${TOKENS}
       MINDWTR_CLOUD_CORS_ORIGIN: https://${DOMAIN}
     volumes:
-      - ${DIRECTORY}/data:/app/cloud_data
+      - ${DIRECTORY}:/app/cloud_data
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mindwtr.webp
