@@ -1,0 +1,54 @@
+services:
+  mindwtr-cloud:
+    image: ghcr.io/dongdongbh/mindwtr-cloud:latest
+    restart: always
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl -fsS http://localhost:8787/health >/dev/null || exit 1',
+        ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    environment:
+      TZ: Europe/Berlin
+      MINDWTR_CLOUD_AUTH_TOKENS: ${TOKENS}
+      MINDWTR_CLOUD_CORS_ORIGIN: https://${DOMAIN}
+    volumes:
+      - ${DIRECTORY}/data:/app/cloud_data
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mindwtr.webp
+    expose:
+      - 8787
+    networks:
+      - net
+
+  mindwtr-app:
+    image: ghcr.io/dongdongbh/mindwtr-app:latest
+    restart: always
+    depends_on:
+      mindwtr-cloud:
+        condition: service_healthy
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mindwtr.webp
+      - traefik.enable=true
+      - traefik.http.routers.mindwtr.entrypoints=https
+      - traefik.http.routers.mindwtr.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.mindwtr.tls=true
+      - traefik.http.routers.mindwtr.tls.certresolver=desec
+    expose:
+      - 5173
+    networks:
+      - proxy
+      - net
+
+networks:
+  proxy:
+    external: true
+  net:
+    external: false
