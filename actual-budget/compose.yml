@@ -2,6 +2,11 @@ services:
   actual-budget:
     image: actualbudget/actual-server:26.7.0@sha256:e18b7fbfec6157a368fad4146563f397502e9da70a120aeaeac63b4977405d1c
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '512M'
+          cpus: '0.5'
     volumes:
       - ${DIRECTORY}:/data
     labels:

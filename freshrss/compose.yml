@@ -2,6 +2,11 @@ services:
   freshrss:
     image: freshrss/freshrss:1.29.1@sha256:ab6b363102ccdbc39f6a62db926f567c61a5289bf25ba460f1c34423d8cc1a4d
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '256M'
+          cpus: '0.5'
     extra_hosts:
       - '${EXTRA_HOSTS:-localhost:127.0.0.1}'
     logging:

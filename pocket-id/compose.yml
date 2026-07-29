@@ -2,6 +2,11 @@ services:
   pocket-id:
     image: ghcr.io/pocket-id/pocket-id:v2.11.0@sha256:b7c37ab3044e53fd29b5f7295eebff5fdc0367dc043f36b41bcbe1815fcd965d
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '256M'
+          cpus: '0.5'
     environment:
       APP_URL: https://${DOMAIN}
       TRUST_PROXY: true

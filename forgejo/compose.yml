@@ -2,6 +2,11 @@ services:
   forgejo:
     image: codeberg.org/forgejo/forgejo:16.0.1@sha256:3eb3107bc9de4e9d6d9e539044e6c802dc0b7be351919a145540d4cb5422bf07
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '2G'
+          cpus: '2.0'
     depends_on:
       db:
         condition: service_healthy
@@ -37,6 +42,11 @@ services:
   db:
     image: postgres:17.10@sha256:a426e44bac0b759c95894d68e1a0ac03ecc20b619f498a91aae373bf06d8508d
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U user -d db']
       interval: 5s

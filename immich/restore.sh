@@ -2,7 +2,7 @@
 
 docker compose run --rm \
 	-v ./.dbBackup.sql.gz:/backup/.dbBackup.sql.gz:ro \
-	immich-db \
+	db \
 	bash -c "
     echo 'Starting PostgreSQL server...'
     docker-entrypoint.sh postgres &
@@ -23,4 +23,3 @@ docker compose run --rm \
     kill \$PG_PID
     wait \$PG_PID
   "
-ƒ

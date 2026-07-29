@@ -2,6 +2,11 @@ services:
   traefik:
     image: traefik:v3.7.9@sha256:652929a140a32d7cafafb13c6cdfab5376cfeff800f51397b87b524501ed02a8
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
     command: >
       --api.dashboard=true
       --api.insecure=true

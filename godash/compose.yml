@@ -5,11 +5,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: '1G'
           cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '0.5'
     environment:
       PUID: 1000
       PGID: 1000

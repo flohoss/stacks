@@ -2,6 +2,11 @@ services:
   outline:
     image: outlinewiki/outline:1.9.2@sha256:32d76719c378931dd65d93945930ca380d8376a0337d98a991fcc12b266f33cf
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
     depends_on:
       db:
         condition: service_healthy
@@ -46,6 +51,11 @@ services:
   db:
     image: postgres:17.10@sha256:a426e44bac0b759c95894d68e1a0ac03ecc20b619f498a91aae373bf06d8508d
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U user -d db']
       interval: 5s
@@ -69,6 +79,11 @@ services:
   redis:
     image: redis:8.8.1@sha256:c88d347edef6249a6d2293f926f1eeb48bd40c57cbcd02c07f52e7f1fd2cb46b
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '256M'
+          cpus: '0.5'
     healthcheck:
       test: ['CMD-SHELL', 'redis-cli ping || exit 1']
     volumes:
