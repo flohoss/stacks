@@ -60,6 +60,17 @@
     },
     {
       "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "ghcr.io/dongdongbh/mindwtr-cloud",
+        "ghcr.io/dongdongbh/mindwtr-app"
+      ],
+      "groupName": "Mindwtr",
+      "groupSlug": "mindwtr",
+      "separateMinorPatch": false,
+      "separateMultipleMajor": false
+    },
+    {
+      "matchDatasources": ["docker"],
       "pinDigests": true
     }
   ]
