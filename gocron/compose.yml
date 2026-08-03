@@ -1,6 +1,6 @@
 services:
   gocron:
-    image: ghcr.io/flohoss/gocron:v0.10.0@sha256:0fa6ea553875d14926776677ef1cda55d41c544f1fa4791ff38ac91be753719c
+    image: ghcr.io/flohoss/gocron:v0.10.0@sha256:ee5e887396e4ff21aa836336c6b1a6f033a045119bc1d1be9e43b295d816327a
     restart: always
     hostname: gobackup
     extra_hosts:
