@@ -82,7 +82,7 @@ services:
       - net
 
   redis:
-    image: redis:8.10.0@sha256:a7efd4ed5037dcfe1543c0e50b9f06293d3e88827005544bf37f381eea5f01cf
+    image: redis:8.10.0@sha256:ba4c82369e89547bbaf1a4cb5c384f596b60e2b834003b80682edd19a49d1c24
     restart: always
     deploy:
       resources:
