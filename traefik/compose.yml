@@ -24,7 +24,7 @@ services:
       --entrypoints.https.http.tls.certresolver=desec
       --providers.providersThrottleDuration=2s
       --providers.file.watch=true
-      --providers.file.filename=/etc/traefik/fileConfig.yml
+      --providers.file.directory=/etc/traefik/config
       --providers.docker=true
       --providers.docker.exposedbydefault=false
       --providers.docker.network=proxy
