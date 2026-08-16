@@ -111,7 +111,7 @@ services:
       - net
 
   signal:
-    image: dock.mau.dev/mautrix/signal:v26.07@sha256:e02b5c140346f2ecfa9a4a029cd7c0311dcb6d114d5aedfaaa88897ede9a9ee8
+    image: dock.mau.dev/mautrix/signal:v26.08@sha256:edafbdfa23366715a5ca9e4c3a5d08efd01e1ff86212d683e1e5c16b681fa2f3
     restart: always
     depends_on:
       matrix:
@@ -130,7 +130,7 @@ services:
       - net
 
   telegram:
-    image: dock.mau.dev/mautrix/telegram:v26.07@sha256:5a8c0e02f6333c7610ca429a2d643f15ea02fcf52e95647af6e76d5d5cbc78f3
+    image: dock.mau.dev/mautrix/telegram:v26.08@sha256:c073961f95aafca58392affcb57ea74364a2d17f018a36d29a208828db8a11e8
     restart: always
     depends_on:
       matrix:
@@ -149,7 +149,7 @@ services:
       - net
 
   whatsapp:
-    image: dock.mau.dev/mautrix/whatsapp:v26.07@sha256:716cb6e6b59b1710bde0b7740e295aa889fef6494a8efcd4ad02ea1965293eaf
+    image: dock.mau.dev/mautrix/whatsapp:v26.08@sha256:86237c4d0d33a1e08910b1f820e6c561f9b8e21dc26943caf266e01021087002
     restart: always
     depends_on:
       matrix:
@@ -168,7 +168,7 @@ services:
       - net
 
   meta:
-    image: dock.mau.dev/mautrix/meta:v26.07@sha256:c65eb7f10a3880933490972bed574678874d780df70458a5ab0568157f9cc15c
+    image: dock.mau.dev/mautrix/meta:v26.08@sha256:662f3d52249304c44c91cbc3d3552eced3e5baf93916be7c6b17a47677036de8
     restart: always
     depends_on:
       matrix:
