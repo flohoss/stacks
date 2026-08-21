@@ -29,16 +29,23 @@ services:
       --providers.docker.exposedbydefault=false
       --providers.docker.network=proxy
       --certificatesresolvers.desec.acme.email=${PRIVATE_EMAIL}
-      --certificatesresolvers.desec.acme.storage=/etc/traefik/acme.json
+      --certificatesresolvers.desec.acme.storage=/etc/traefik/acme-desec.json
       --certificatesresolvers.desec.acme.dnschallenge.provider=desec
-      --certificatesresolvers.desec.acme.dnschallenge.resolvers=45.54.76.1:53,185.49.141.38:53
+      --certificatesresolvers.desec.acme.dnschallenge.resolvers=ns1.desec.io:53,ns2.desec.org:53
       --certificatesresolvers.desec.acme.dnschallenge.propagation.disableanschecks=true
       --certificatesresolvers.desec.acme.dnschallenge.delaybeforecheck=300
+      --certificatesresolvers.hetzner.acme.email=${PRIVATE_EMAIL}
+      --certificatesresolvers.hetzner.acme.storage=/etc/traefik/acme-hetzner.json
+      --certificatesresolvers.hetzner.acme.dnschallenge.provider=hetzner
+      --certificatesresolvers.hetzner.acme.dnschallenge.resolvers=hydrogen.ns.hetzner.com:53,oxygen.ns.hetzner.com:53
+      --certificatesresolvers.hetzner.acme.dnschallenge.propagation.disableanschecks=true
+      --certificatesresolvers.hetzner.acme.dnschallenge.delaybeforecheck=300
       --log.level=ERROR
       --serversTransport.insecureSkipVerify=true
       ${TRAEFIK_EXTRA_FLAGS:-}
     environment:
       DESEC_TOKEN: ${DESEC_TOKEN}
+      HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
     volumes:
       - ${DIRECTORY}:/etc/traefik
       - /var/run/docker.sock:/var/run/docker.sock:ro
