@@ -21,19 +21,13 @@ services:
       --entrypoints.https.http.encodedCharacters.allowEncodedSlash=true
       --entrypoints.https.http.encodedCharacters.allowEncodedQuestionMark=true
       --entrypoints.https.http.middlewares=security-headers@file
-      --entrypoints.https.http.tls.certresolver=desec
+      --entrypoints.https.http.tls.certresolver=hetzner
       --providers.providersThrottleDuration=2s
       --providers.file.watch=true
       --providers.file.directory=/etc/traefik/config
       --providers.docker=true
       --providers.docker.exposedbydefault=false
       --providers.docker.network=proxy
-      --certificatesresolvers.desec.acme.email=${PRIVATE_EMAIL}
-      --certificatesresolvers.desec.acme.storage=/etc/traefik/acme-desec.json
-      --certificatesresolvers.desec.acme.dnschallenge.provider=desec
-      --certificatesresolvers.desec.acme.dnschallenge.resolvers=ns1.desec.io:53,ns2.desec.org:53
-      --certificatesresolvers.desec.acme.dnschallenge.propagation.disableanschecks=true
-      --certificatesresolvers.desec.acme.dnschallenge.delaybeforecheck=300
       --certificatesresolvers.hetzner.acme.email=${PRIVATE_EMAIL}
       --certificatesresolvers.hetzner.acme.storage=/etc/traefik/acme-hetzner.json
       --certificatesresolvers.hetzner.acme.dnschallenge.provider=hetzner
@@ -44,7 +38,6 @@ services:
       --serversTransport.insecureSkipVerify=true
       ${TRAEFIK_EXTRA_FLAGS:-}
     environment:
-      DESEC_TOKEN: ${DESEC_TOKEN}
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
     volumes:
       - ${DIRECTORY}:/etc/traefik

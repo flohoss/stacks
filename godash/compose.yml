@@ -20,7 +20,7 @@ services:
       - traefik.http.routers.godash.entrypoints=https
       - traefik.http.routers.godash.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.godash.tls=true
-      - traefik.http.routers.godash.tls.certresolver=desec
+      - traefik.http.routers.godash.tls.certresolver=hetzner
     expose:
       - 8156
     networks:

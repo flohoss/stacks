@@ -20,7 +20,7 @@ All services include Unraid Docker labels for easy management in Unraid's Docker
 
 All services are configured to work with [Traefik](https://github.com/traefik/traefik) as a reverse proxy with:
 - Automatic HTTPS via Let's Encrypt
-- deSEC DNS challenge for certificate generation
+- hetzner DNS challenge for certificate generation
 - Automatic service discovery via Docker labels
 
 ## Notes

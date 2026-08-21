@@ -34,7 +34,7 @@ services:
       - traefik.http.routers.freshrss.entrypoints=https
       - traefik.http.routers.freshrss.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.freshrss.tls=true
-      - traefik.http.routers.freshrss.tls.certresolver=desec
+      - traefik.http.routers.freshrss.tls.certresolver=hetzner
     expose:
       - 8080
     networks:

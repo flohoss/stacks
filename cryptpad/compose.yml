@@ -34,11 +34,11 @@ services:
       - traefik.http.routers.cryptpad.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.cryptpad.entrypoints=https
       - traefik.http.routers.cryptpad.tls=true
-      - traefik.http.routers.cryptpad.tls.certresolver=desec
+      - traefik.http.routers.cryptpad.tls.certresolver=hetzner
       - traefik.http.routers.cryptpad-sandbox.rule=Host(`${SANDBOX_DOMAIN}`)
       - traefik.http.routers.cryptpad-sandbox.entrypoints=https
       - traefik.http.routers.cryptpad-sandbox.tls=true
-      - traefik.http.routers.cryptpad-sandbox.tls.certresolver=desec
+      - traefik.http.routers.cryptpad-sandbox.tls.certresolver=hetzner
     expose:
       - 3000
     networks:

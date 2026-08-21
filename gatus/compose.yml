@@ -18,7 +18,7 @@ services:
       - traefik.http.routers.gatus.entrypoints=https
       - traefik.http.routers.gatus.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.gatus.tls=true
-      - traefik.http.routers.gatus.tls.certresolver=desec
+      - traefik.http.routers.gatus.tls.certresolver=hetzner
     expose:
       - 8080
     networks:

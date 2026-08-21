@@ -22,7 +22,7 @@ services:
       - traefik.http.routers.ntfy.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.ntfy.entrypoints=https
       - traefik.http.routers.ntfy.tls=true
-      - traefik.http.routers.ntfy.tls.certresolver=desec
+      - traefik.http.routers.ntfy.tls.certresolver=hetzner
     expose:
       - 80
     networks:

@@ -30,7 +30,7 @@ services:
       - traefik.http.routers.mindwtr-api.entrypoints=https
       - traefik.http.routers.mindwtr-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/v1`)
       - traefik.http.routers.mindwtr-api.tls=true
-      - traefik.http.routers.mindwtr-api.tls.certresolver=desec
+      - traefik.http.routers.mindwtr-api.tls.certresolver=hetzner
       - traefik.http.routers.mindwtr-api.service=mindwtr-api
       - traefik.http.routers.mindwtr-api.priority=100
       - traefik.http.services.mindwtr-api.loadbalancer.server.port=8787
@@ -58,7 +58,7 @@ services:
       - traefik.http.routers.mindwtr.entrypoints=https
       - traefik.http.routers.mindwtr.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.mindwtr.tls=true
-      - traefik.http.routers.mindwtr.tls.certresolver=desec
+      - traefik.http.routers.mindwtr.tls.certresolver=hetzner
       - traefik.http.routers.mindwtr.service=mindwtr
       - traefik.http.routers.mindwtr.priority=1
       - traefik.http.services.mindwtr.loadbalancer.server.port=5173

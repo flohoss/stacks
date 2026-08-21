@@ -27,7 +27,7 @@ services:
       - traefik.http.routers.mittagskarte.entrypoints=https
       - traefik.http.routers.mittagskarte.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.mittagskarte.tls=true
-      - traefik.http.routers.mittagskarte.tls.certresolver=desec
+      - traefik.http.routers.mittagskarte.tls.certresolver=hetzner
     expose:
       - 8090
     networks:

@@ -24,7 +24,7 @@ services:
       - traefik.http.routers.pocket-id.entrypoints=https
       - traefik.http.routers.pocket-id.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.pocket-id.tls=true
-      - traefik.http.routers.pocket-id.tls.certresolver=desec
+      - traefik.http.routers.pocket-id.tls.certresolver=hetzner
       - traefik.http.services.pocket-id.loadbalancer.server.port=1411
     expose:
       - 1411

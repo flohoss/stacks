@@ -51,7 +51,7 @@ services:
       - traefik.http.routers.seafile.rule=Host(`${SEAFILE_SERVER_HOSTNAME}`)
       - traefik.http.routers.seafile.entrypoints=https
       - traefik.http.routers.seafile.tls=true
-      - traefik.http.routers.seafile.tls.certresolver=desec
+      - traefik.http.routers.seafile.tls.certresolver=hetzner
     expose:
       - 80
     networks:
@@ -143,7 +143,7 @@ services:
       - traefik.http.routers.seadoc.rule=Host(`${SEADOC_SERVER_HOSTNAME}`)
       - traefik.http.routers.seadoc.entrypoints=https
       - traefik.http.routers.seadoc.tls=true
-      - traefik.http.routers.seadoc.tls.certresolver=desec
+      - traefik.http.routers.seadoc.tls.certresolver=hetzner
     expose:
       - 80
     networks:

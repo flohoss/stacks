@@ -17,7 +17,7 @@ services:
       - traefik.http.routers.actual-budget.entrypoints=https
       - traefik.http.routers.actual-budget.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.actual-budget.tls=true
-      - traefik.http.routers.actual-budget.tls.certresolver=desec
+      - traefik.http.routers.actual-budget.tls.certresolver=hetzner
     healthcheck:
       test: ['CMD-SHELL', 'node scripts/health-check.js']
       interval: 60s

@@ -26,7 +26,7 @@ services:
       - traefik.http.routers.matrix.entrypoints=https
       - traefik.http.routers.matrix.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.matrix.tls=true
-      - traefik.http.routers.matrix.tls.certresolver=desec
+      - traefik.http.routers.matrix.tls.certresolver=hetzner
       - traefik.http.routers.matrix.priority=1
       - traefik.http.routers.matrix.service=matrix
       - traefik.http.services.matrix.loadbalancer.server.port=8008
@@ -76,7 +76,7 @@ services:
       - traefik.http.routers.matrix-wellknown.entrypoints=https
       - traefik.http.routers.matrix-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/matrix/`)
       - traefik.http.routers.matrix-wellknown.tls=true
-      - traefik.http.routers.matrix-wellknown.tls.certresolver=desec
+      - traefik.http.routers.matrix-wellknown.tls.certresolver=hetzner
       - traefik.http.routers.matrix-wellknown.priority=100
     expose:
       - 8080

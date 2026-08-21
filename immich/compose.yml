@@ -33,7 +33,7 @@ services:
       - traefik.http.routers.immich.entrypoints=https
       - traefik.http.routers.immich.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.immich.tls=true
-      - traefik.http.routers.immich.tls.certresolver=desec
+      - traefik.http.routers.immich.tls.certresolver=hetzner
     expose:
       - 2283
     networks:
