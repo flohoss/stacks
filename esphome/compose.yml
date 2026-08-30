@@ -25,6 +25,8 @@ services:
       - traefik.http.routers.esphome.tls.certresolver=hetzner
     expose:
       - 6052
+    ports:
+      - 6055:6055
     networks:
       - proxy
 
