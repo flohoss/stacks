@@ -1,0 +1,33 @@
+services:
+  esphome:
+    image: ghcr.io/esphome/esphome:2026.8.1@sha256:dda49fd0079ed818c2859b52ffeb2c07263349c2d3cc601a0539fd3a8f855d21
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '8G'
+          cpus: '4.0'
+    environment:
+      TZ: Europe/Berlin
+      ESPHOME_USERNAME: ${ESPHOME_USERNAME}
+      ESPHOME_PASSWORD: ${ESPHOME_PASSWORD}
+    volumes:
+      - ${DIRECTORY}:/config
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/esphome.webp
+      - traefik.enable=true
+      - traefik.http.routers.esphome.entrypoints=https
+      - traefik.http.routers.esphome.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.esphome.tls=true
+      - traefik.http.routers.esphome.tls.certresolver=hetzner
+    expose:
+      - 6052
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
