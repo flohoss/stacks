@@ -33,7 +33,7 @@ services:
       --certificatesresolvers.hetzner.acme.dnschallenge.provider=hetzner
       --certificatesresolvers.hetzner.acme.dnschallenge.resolvers=hydrogen.ns.hetzner.com:53,oxygen.ns.hetzner.com:53
       --certificatesresolvers.hetzner.acme.dnschallenge.propagation.disableanschecks=true
-      --certificatesresolvers.hetzner.acme.dnschallenge.delaybeforecheck=300
+      --certificatesresolvers.hetzner.acme.dnschallenge.delaybeforecheck=120
       --log.level=ERROR
       --serversTransport.insecureSkipVerify=true
       ${TRAEFIK_EXTRA_FLAGS:-}
