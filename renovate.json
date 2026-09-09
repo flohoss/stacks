@@ -3,7 +3,7 @@
   "extends": ["config:recommended"],
   "assignees": ["flohoss"],
   "prHourlyLimit": 0,
-  "dependencyDashboard": false,
+  "dependencyDashboard": true,
   "packageRules": [
     {
       "matchDatasources": ["docker"],
