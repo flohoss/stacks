@@ -23,6 +23,8 @@ services:
       OIDC_SCOPES: openid email profile
       OIDC_X_FORWARDED_HEADERS: X-Forwarded-Proto X-Forwarded-Host
       OIDC_REMOTE_USER_CLAIM: preferred_username
+      INTERNAL_HOST_ALLOWLIST: ${INTERNAL_HOST_ALLOWLIST:-localhost,127.0.0.1,::1}
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-172.18.0.0/16}
     volumes:
       - ${DIRECTORY}/data:/var/www/FreshRSS/data
       - ${DIRECTORY}/extensions:/var/www/FreshRSS/extensions
