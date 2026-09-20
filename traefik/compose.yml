@@ -61,7 +61,7 @@ services:
       - proxy
     depends_on:
       crowdsec:
-        condition: service_healthy
+        condition: service_started
       logrotate:
         condition: service_started
 
