@@ -74,9 +74,9 @@ services:
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_BOUNCER_KEY}
     volumes:
       - crowdsec-data:/var/lib/crowdsec/data
-      - ${DIRECTORY}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yml:ro
+      - ${DIRECTORY}/crowdsec/appsec.yml:/etc/crowdsec/acquis.d/appsec.yml:ro
       - ${DIRECTORY}/logs:/var/log/traefik:ro
-      - ${DIRECTORY}/traefik-logs.yml:/etc/crowdsec/acquis.d/traefik-logs.yml:ro
+      - ${DIRECTORY}/crowdsec/traefik-logs.yml:/etc/crowdsec/acquis.d/traefik-logs.yml:ro
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/crowdsec.webp
