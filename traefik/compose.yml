@@ -69,6 +69,7 @@ services:
       CUSTOM_HOSTNAME: crowdsec
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_BOUNCER_KEY}
     volumes:
+      - crowdsec-data:/var/lib/crowdsec/data
       - ${DIRECTORY}/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
     labels:
       - net.unraid.docker.managed=dockhand
@@ -79,6 +80,9 @@ services:
 networks:
   proxy:
     external: true
+
+volumes:
+  crowdsec-data:
 
 # Example EXTRA_FLAGS:
 # --entrypoints.https.http.tls.domains[0].main=*.unjx.de
