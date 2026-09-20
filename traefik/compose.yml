@@ -12,6 +12,8 @@ services:
       --api.insecure=true
       --global.checkNewVersion=false
       --global.sendAnonymousUsage=false
+      --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      --experimental.plugins.bouncer.version=v1.7.1
       --entrypoints.http.address=:80
       --entrypoints.http.http.redirections.entryPoint.to=https
       --entrypoints.https.address=:443
@@ -20,11 +22,12 @@ services:
       --entrypoints.https.transport.respondingTimeouts.writeTimeout=600s
       --entrypoints.https.http.encodedCharacters.allowEncodedSlash=true
       --entrypoints.https.http.encodedCharacters.allowEncodedQuestionMark=true
-      --entrypoints.https.http.middlewares=security-headers@file
+      --entrypoints.https.http.middlewares=crowdsec@file,security-headers@file
       --entrypoints.https.http.tls.certresolver=hetzner
       --providers.providersThrottleDuration=2s
       --providers.file.watch=true
       --providers.file.directory=/etc/traefik/config
+      --providers.file.allowEnv=true
       --providers.docker=true
       --providers.docker.exposedbydefault=false
       --providers.docker.network=proxy
@@ -38,6 +41,7 @@ services:
       --serversTransport.insecureSkipVerify=true
       ${TRAEFIK_EXTRA_FLAGS:-}
     environment:
+      CROWDSEC_BOUNCER_KEY: ${CROWDSEC_BOUNCER_KEY}
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
     volumes:
       - ${DIRECTORY}:/etc/traefik
@@ -52,6 +56,26 @@ services:
     networks:
       - proxy
 
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.8.1@sha256:0f2523fa61ef507f15d953045cface490cc880670c62f2755ced17524107f71a
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
+    environment:
+      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      CUSTOM_HOSTNAME: crowdsec
+      BOUNCER_KEY_TRAEFIK: ${CROWDSEC_BOUNCER_KEY}
+    volumes:
+      - ${DIRECTORY}/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/crowdsec.webp
+    networks:
+      - proxy
+
 networks:
   proxy:
     external: true
@@ -59,5 +83,3 @@ networks:
 # Example EXTRA_FLAGS:
 # --entrypoints.https.http.tls.domains[0].main=*.unjx.de
 # --providers.docker.defaultRule="Host(`{{ lower (first (splitList \"-\" .Name) | default .Name) }}.unjx.de`)"
-# --log.level=DEBUG
-# --api.dashboard=true
