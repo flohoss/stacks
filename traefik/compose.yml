@@ -83,6 +83,25 @@ services:
     networks:
       - proxy
 
+  logrotate:
+    image: samuelrunggaldier/logrotate:1.2.3@sha256:411c0afc326281bfc7e7d4b8f54f3ca9cc4bb1a50f1c641778d7f212d84981f2
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: '128M'
+          cpus: '0.25'
+    environment:
+      TZ: Europe/Berlin
+      LOGS_PATH: '/logs/*.log'
+      TRIGGER_INTERVAL: daily
+      MAX_SIZE: 50M
+      MAX_BACKUPS: 7
+      MAX_AGE: 30
+      DELAYCOMPRESS: 'true'
+    volumes:
+      - ${DIRECTORY}/logs:/logs
+
 networks:
   proxy:
     external: true
