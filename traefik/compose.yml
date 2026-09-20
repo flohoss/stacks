@@ -24,6 +24,10 @@ services:
       --entrypoints.https.http.encodedCharacters.allowEncodedQuestionMark=true
       --entrypoints.https.http.middlewares=crowdsec@file,security-headers@file
       --entrypoints.https.http.tls.certresolver=hetzner
+      --accesslog=true
+      --accesslog.filepath=/var/log/traefik/access.log
+      --accesslog.format=json
+      --accesslog.bufferingsize=0
       --providers.providersThrottleDuration=2s
       --providers.file.watch=true
       --providers.file.directory=/etc/traefik/config
@@ -44,6 +48,7 @@ services:
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
     volumes:
       - ${DIRECTORY}:/etc/traefik
+      - ${DIRECTORY}/logs:/var/log/traefik
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - net.unraid.docker.managed=dockhand
@@ -64,12 +69,14 @@ services:
           memory: '1G'
           cpus: '1.0'
     environment:
-      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios
       CUSTOM_HOSTNAME: crowdsec
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_BOUNCER_KEY}
     volumes:
       - crowdsec-data:/var/lib/crowdsec/data
-      - ${DIRECTORY}/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
+      - ${DIRECTORY}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yml:ro
+      - ${DIRECTORY}/logs:/var/log/traefik:ro
+      - ${DIRECTORY}/traefik-logs.yml:/etc/crowdsec/acquis.d/traefik-logs.yml:ro
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/crowdsec.webp
