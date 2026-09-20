@@ -49,6 +49,7 @@ services:
     volumes:
       - ${DIRECTORY}:/etc/traefik
       - ${DIRECTORY}/logs:/var/log/traefik
+      - ${DIRECTORY}/crowdsec/ban.html:/ban.html:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - net.unraid.docker.managed=dockhand
