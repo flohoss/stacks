@@ -2,6 +2,10 @@ services:
   traefik:
     image: traefik:v3.7.13@sha256:1c32e7c368204fd72812152ebdd2ac0425993df6fd982317deb02e48f2d5423c
     restart: always
+    logging:
+      options:
+        max-size: 50m
+        max-file: '7'
     deploy:
       resources:
         limits:
@@ -25,7 +29,6 @@ services:
       --entrypoints.https.http.middlewares=crowdsec@file,security-headers@file
       --entrypoints.https.http.tls.certresolver=hetzner
       --accesslog=true
-      --accesslog.filepath=/var/log/traefik/access.log
       --accesslog.format=json
       --accesslog.bufferingsize=0
       --providers.providersThrottleDuration=2s
@@ -48,7 +51,6 @@ services:
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
     volumes:
       - ${DIRECTORY}:/etc/traefik
-      - ${DIRECTORY}/logs:/var/log/traefik
       - ${DIRECTORY}/crowdsec/ban.html:/ban.html:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
@@ -62,8 +64,6 @@ services:
       - proxy
     depends_on:
       crowdsec:
-        condition: service_started
-      logrotate:
         condition: service_started
 
   crowdsec:
@@ -82,31 +82,12 @@ services:
       - crowdsec-data:/var/lib/crowdsec/data
       - ${DIRECTORY}/crowdsec/acquis.d:/etc/crowdsec/acquis.d:ro
       - ${DIRECTORY}/crowdsec/simulation.yml:/etc/crowdsec/simulation.yaml:ro
-      - ${DIRECTORY}/logs:/var/log/traefik:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/crowdsec.webp
     networks:
       - proxy
-
-  logrotate:
-    image: samuelrunggaldier/logrotate:1.2.3@sha256:411c0afc326281bfc7e7d4b8f54f3ca9cc4bb1a50f1c641778d7f212d84981f2
-    restart: always
-    deploy:
-      resources:
-        limits:
-          memory: '128M'
-          cpus: '0.25'
-    environment:
-      TZ: Europe/Berlin
-      LOGS_PATH: '/logs/*.log'
-      TRIGGER_INTERVAL: daily
-      MAX_SIZE: 50M
-      MAX_BACKUPS: 7
-      MAX_AGE: 30
-      DELAYCOMPRESS: 'true'
-    volumes:
-      - ${DIRECTORY}/logs:/logs
 
 networks:
   proxy:
