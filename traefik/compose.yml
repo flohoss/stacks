@@ -81,7 +81,7 @@ services:
     volumes:
       - crowdsec-data:/var/lib/crowdsec/data
       - ${DIRECTORY}/crowdsec/acquis.d:/etc/crowdsec/acquis.d:ro
-      - ${DIRECTORY}/crowdsec/simulation.yml:/etc/crowdsec/simulation.yaml:ro
+      - ${DIRECTORY}/crowdsec/parsers:/etc/crowdsec/parsers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - net.unraid.docker.managed=dockhand
