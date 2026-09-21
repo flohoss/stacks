@@ -29,6 +29,12 @@ services:
       - traefik.http.routers.matrix.tls.certresolver=hetzner
       - traefik.http.routers.matrix.priority=1
       - traefik.http.routers.matrix.service=matrix
+      - traefik.http.routers.matrix.middlewares=matrix-cors@docker
+      - traefik.http.middlewares.matrix-cors.headers.accesscontrolalloworiginlist=https://app.element.io
+      - traefik.http.middlewares.matrix-cors.headers.accesscontrolallowmethods=GET, HEAD, POST, PUT, DELETE, OPTIONS
+      - traefik.http.middlewares.matrix-cors.headers.accesscontrolallowheaders=*
+      - traefik.http.middlewares.matrix-cors.headers.accesscontrolallowcredentials=true
+      - traefik.http.middlewares.matrix-cors.headers.accesscontrolmaxage=1728000
       - traefik.http.services.matrix.loadbalancer.server.port=8008
     networks:
       - proxy
