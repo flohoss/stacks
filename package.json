@@ -1,0 +1,20 @@
+{
+  "name": "stacks",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "3.9.8"
+  },
+  "prettier": {
+    "printWidth": 160,
+    "singleQuote": true,
+    "semi": true,
+    "tabWidth": 2,
+    "useTabs": false,
+    "trailingComma": "es5",
+    "endOfLine": "lf",
+    "bracketSpacing": false,
+    "arrowParens": "always"
+  }
+}
