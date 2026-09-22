@@ -75,14 +75,7 @@ services:
           memory: '1G'
           cpus: '1.0'
     healthcheck:
-      test:
-        [
-          'CMD',
-          '/usr/local/bin/healthcheck.sh',
-          '--connect',
-          '--mariadbupgrade',
-          '--innodb_initialized',
-        ]
+      test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect', '--mariadbupgrade', '--innodb_initialized']
       interval: 20s
       start_period: 30s
       timeout: 5s

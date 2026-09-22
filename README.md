@@ -12,6 +12,7 @@ This repository uses [Renovate](https://github.com/renovatebot/renovate) to auto
 ## Unraid Compatibility
 
 All services include Unraid Docker labels for easy management in Unraid's Docker UI:
+
 - `net.unraid.docker.managed=composeman`
 - `net.unraid.docker.webui=https://[IP]:[PORT:PORT]`
 - `net.unraid.docker.icon=<icon-url>`
@@ -19,6 +20,7 @@ All services include Unraid Docker labels for easy management in Unraid's Docker
 ## Reverse Proxy
 
 All services are configured to work with [Traefik](https://github.com/traefik/traefik) as a reverse proxy with:
+
 - Automatic HTTPS via Let's Encrypt
 - hetzner DNS challenge for certificate generation
 - Automatic service discovery via Docker labels
@@ -32,6 +34,7 @@ All services are configured to work with [Traefik](https://github.com/traefik/tr
 ## Restore Scripts
 
 Some services include restore scripts for database backups:
+
 - [matrix/restore.sh](matrix/restore.sh) - Restore Matrix Synapse database
 - [immich/restore.sh](immich/restore.sh) - Restore Immich database
 

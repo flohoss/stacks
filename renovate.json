@@ -33,10 +33,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": [
-        "ghcr.io/immich-app/immich-machine-learning",
-        "ghcr.io/immich-app/immich-server"
-      ],
+      "matchPackageNames": ["ghcr.io/immich-app/immich-machine-learning", "ghcr.io/immich-app/immich-server"],
       "groupName": "Immich",
       "groupSlug": "immich",
       "separateMinorPatch": false,
@@ -44,12 +41,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": [
-        "dock.mau.dev/mautrix/signal",
-        "dock.mau.dev/mautrix/telegram",
-        "dock.mau.dev/mautrix/whatsapp",
-        "dock.mau.dev/mautrix/meta"
-      ],
+      "matchPackageNames": ["dock.mau.dev/mautrix/signal", "dock.mau.dev/mautrix/telegram", "dock.mau.dev/mautrix/whatsapp", "dock.mau.dev/mautrix/meta"],
       "groupName": "Mautrix",
       "groupSlug": "mautrix",
       "separateMinorPatch": false,
@@ -57,10 +49,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": [
-        "ghcr.io/dongdongbh/mindwtr-cloud",
-        "ghcr.io/dongdongbh/mindwtr-app"
-      ],
+      "matchPackageNames": ["ghcr.io/dongdongbh/mindwtr-cloud", "ghcr.io/dongdongbh/mindwtr-app"],
       "groupName": "Mindwtr",
       "groupSlug": "mindwtr",
       "separateMinorPatch": false,
@@ -75,9 +64,7 @@
     {
       "customType": "regex",
       "fileMatch": ["^compose\\.ya?ml$"],
-      "matchStrings": [
-        "--experimental\\.plugins\\.bouncer\\.version=(?<currentValue>v[0-9.]+)"
-      ],
+      "matchStrings": ["--experimental\\.plugins\\.bouncer\\.version=(?<currentValue>v[0-9.]+)"],
       "depNameTemplate": "maxlerebourg/crowdsec-bouncer-traefik-plugin",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
