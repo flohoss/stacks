@@ -2,6 +2,10 @@ services:
   paperless:
     image: ghcr.io/paperless-ngx/paperless-ngx:3.2.1@sha256:5fa76604a81df6945086e0837b14b56543d137e8ce4f311cc5d9ebe907e74e79
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -57,6 +61,10 @@ services:
   db:
     image: postgres:17.11@sha256:f4c66b820c6f974249089d3d16d86a3698eae11e8746eb6644b2271031e91232
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:
@@ -84,6 +92,10 @@ services:
   redis:
     image: redis:8.10.2@sha256:d5ac52db24d4e70566fe9944f22cf5bdc2bc739b05c0f426335161ea6c23f3b3
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:

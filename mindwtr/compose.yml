@@ -2,6 +2,10 @@ services:
   cloud:
     image: ghcr.io/dongdongbh/mindwtr-cloud:1.3.1@sha256:b84e14e80023ed75df16d8f8f82b789dc767a6476483d0d5201ed44bbe417bdb
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -42,6 +46,10 @@ services:
   app:
     image: ghcr.io/dongdongbh/mindwtr-app:1.3.1@sha256:f6993a18e5f547a4df3ec941f94e10a74cf1287598ad7b21dca4a8478c950998
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:

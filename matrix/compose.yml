@@ -2,6 +2,10 @@ services:
   matrix:
     image: matrixdotorg/synapse:v1.161.0@sha256:6b95dd129e35e97e8032cb759e5db4a516a5f7ef6c98d34d716fea1ae239b62a
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -37,6 +41,10 @@ services:
   matrix-wellknown:
     image: nginxinc/nginx-unprivileged:1.31.6@sha256:31e97ebaac04c19c8e7da6012c5776e86a4414695565200719d6113cb68d0b78
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:
@@ -86,6 +94,10 @@ services:
   db:
     image: postgres:17.11@sha256:f4c66b820c6f974249089d3d16d86a3698eae11e8746eb6644b2271031e91232
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:
@@ -113,6 +125,10 @@ services:
   signal:
     image: dock.mau.dev/mautrix/signal:v26.09@sha256:bbaa0910758a09093b686bcd2a93c5ccff6530e3a00f83bda21c2c347d0060c6
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     depends_on:
       matrix:
         condition: service_healthy
@@ -132,6 +148,10 @@ services:
   telegram:
     image: dock.mau.dev/mautrix/telegram:v26.09@sha256:03e79bcf076da566a9984b0bc06151acbf71e3df9cd2e291142713ad9ebff980
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     depends_on:
       matrix:
         condition: service_healthy
@@ -151,6 +171,10 @@ services:
   whatsapp:
     image: dock.mau.dev/mautrix/whatsapp:v26.09@sha256:e92b5217929622aabfea3cf72b279d1b73790a035a293d7149bcce7ae220b86f
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     depends_on:
       matrix:
         condition: service_healthy
@@ -170,6 +194,10 @@ services:
   meta:
     image: dock.mau.dev/mautrix/meta:v26.09@sha256:a8538857cc2b06c01854c1bc7ddaa0eb0975a9da4aefb4a70af907b0cad16b6b
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     depends_on:
       matrix:
         condition: service_healthy

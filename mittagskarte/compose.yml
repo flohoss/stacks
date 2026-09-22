@@ -2,6 +2,10 @@ services:
   mittagskarte:
     image: ghcr.io/flohoss/mittagskarte:v2.1.3@sha256:b6a2d0dcec211cb20f5d3fa79bd191737bf35a04be9bc30757d90b4d24c15bdd
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -37,6 +41,10 @@ services:
   snapotter:
     image: snapotter/snapotter:2.2.0@sha256:2e11b4fa9138fa93e0fdfde5da3a2d042eebcfa81dd51286488872a3eb8086c8
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:

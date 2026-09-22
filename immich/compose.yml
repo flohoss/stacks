@@ -2,6 +2,10 @@ services:
   immich:
     image: ghcr.io/immich-app/immich-server:v3.2.2@sha256:79cc1623323d5894922686d8743b4780181428f98eecbfb58ce12c41ef02d1ea
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -45,6 +49,10 @@ services:
   machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:v3.2.2@sha256:60dfcf266a9ef3b7376f5678e8c980d4fb61db5fc48c078fe8a326ab1535d60d
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -70,6 +78,10 @@ services:
   redis:
     image: docker.io/valkey/valkey:9.1.2@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:
@@ -88,6 +100,10 @@ services:
   db:
     image: ghcr.io/immich-app/postgres:14-vectorchord1.1.1-pgvector0.8.5@sha256:3720e4d2c7d769360174b2d0b53d4e2efedf9dffb35cb9570528effd26dde1fd
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:

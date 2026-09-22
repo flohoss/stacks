@@ -2,6 +2,10 @@ services:
   seafile:
     image: seafileltd/seafile-mc:13.0.28@sha256:b0c90832126bf432db908449f1bb450211e6bbf75a2193bab3399e2a9636eccf
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -61,6 +65,10 @@ services:
   db:
     image: mariadb:10.11.19@sha256:7f22313fc130a377a44999965bcb0a08dd5b21e8502824c1b864f792f9bc66ab
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:
@@ -97,6 +105,10 @@ services:
   redis:
     image: redis:8.10.2@sha256:d5ac52db24d4e70566fe9944f22cf5bdc2bc739b05c0f426335161ea6c23f3b3
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:
@@ -117,6 +129,10 @@ services:
   seadoc:
     image: seafileltd/sdoc-server:2.0.9@sha256:5b1bf5a8bfdb8bc5db957e7faee2220111fd6eff00795eaaf172e2f80bb999a5
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
