@@ -63,7 +63,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^compose\\.ya?ml$"],
+      "managerFilePatterns": ["**/compose.{yml,yaml}"],
       "matchStrings": ["--experimental\\.plugins\\.bouncer\\.version=(?<currentValue>v[0-9.]+)"],
       "depNameTemplate": "maxlerebourg/crowdsec-bouncer-traefik-plugin",
       "datasourceTemplate": "github-releases",
