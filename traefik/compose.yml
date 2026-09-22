@@ -47,7 +47,7 @@ services:
       --serversTransport.insecureSkipVerify=true
       ${TRAEFIK_EXTRA_FLAGS:-}
     environment:
-      CROWDSEC_BOUNCER_KEY: ${CROWDSEC_BOUNCER_KEY}
+      BOUNCER_KEY: ${BOUNCER_KEY}
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
     volumes:
       - ${DIRECTORY}:/etc/traefik
@@ -80,11 +80,11 @@ services:
           cpus: '1.0'
     environment:
       COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios
-      CUSTOM_HOSTNAME: crowdsec
-      BOUNCER_KEY_TRAEFIK: ${CROWDSEC_BOUNCER_KEY}
-      CROWDSEC_NTFY_TOKEN: ${CROWDSEC_NTFY_TOKEN}
-      CROWDSEC_NTFY_URL: ${CROWDSEC_NTFY_URL}
-      CROWDSEC_NTFY_TOPIC: ${CROWDSEC_NTFY_TOPIC}
+      CUSTOM_HOSTNAME: ${CUSTOM_HOSTNAME}
+      BOUNCER_KEY_TRAEFIK: ${BOUNCER_KEY}
+      NTFY_TOKEN: ${NTFY_TOKEN}
+      NTFY_URL: ${NTFY_URL}
+      NTFY_TOPIC: ${NTFY_TOPIC}
     volumes:
       - crowdsec-data:/var/lib/crowdsec/data
       - ${DIRECTORY}/crowdsec/acquis.d:/etc/crowdsec/acquis.d:ro
