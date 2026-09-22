@@ -84,6 +84,7 @@ services:
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_BOUNCER_KEY}
       CROWDSEC_NTFY_TOKEN: ${CROWDSEC_NTFY_TOKEN}
       CROWDSEC_NTFY_URL: ${CROWDSEC_NTFY_URL}
+      CROWDSEC_NTFY_TOPIC: ${CROWDSEC_NTFY_TOPIC}
     volumes:
       - crowdsec-data:/var/lib/crowdsec/data
       - ${DIRECTORY}/crowdsec/acquis.d:/etc/crowdsec/acquis.d:ro
