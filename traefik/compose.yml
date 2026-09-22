@@ -82,11 +82,15 @@ services:
       COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios
       CUSTOM_HOSTNAME: crowdsec
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_BOUNCER_KEY}
+      CROWDSEC_NTFY_TOKEN: ${CROWDSEC_NTFY_TOKEN}
+      CROWDSEC_NTFY_URL: ${CROWDSEC_NTFY_URL}
     volumes:
       - crowdsec-data:/var/lib/crowdsec/data
       - ${DIRECTORY}/crowdsec/acquis.d:/etc/crowdsec/acquis.d:ro
       - ${DIRECTORY}/crowdsec/parsers/s02-enrich/allowlist-ip.yaml:/etc/crowdsec/parsers/s02-enrich/allowlist-ip.yaml:ro
       - ${DIRECTORY}/crowdsec/simulation.yml:/etc/crowdsec/simulation.yaml:ro
+      - ${DIRECTORY}/crowdsec/notifications/ntfy.yml:/etc/crowdsec/notifications/ntfy.yaml:ro
+      - ${DIRECTORY}/crowdsec/profiles.yml:/etc/crowdsec/profiles.yaml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - net.unraid.docker.managed=dockhand
