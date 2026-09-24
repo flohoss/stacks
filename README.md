@@ -31,14 +31,17 @@ All services are configured to work with [Traefik](https://github.com/traefik/tr
 - All images use digest pinning for reproducible deployments
 - Healthchecks are configured with `depends_on` for proper startup ordering
 
-## Restore Scripts
+## Database Backups
 
-Some services include restore scripts for database backups:
+[db.sh](db.sh) dumps or restores a database volume using plain Docker, so the compose project and the stack definition are not needed:
 
-- [matrix/restore.sh](matrix/restore.sh) - Restore Matrix Synapse database
-- [immich/restore.sh](immich/restore.sh) - Restore Immich database
+```sh
+./db.sh backup  --volume immich_db --file ./immich.sql.gz
+./db.sh restore --volume immich_db --file ./immich.sql.gz
+./db.sh restore --volume seafile_db --engine mariadb --file ./seafile.sql
+```
 
-Stop the stack before running restore scripts.
+The database image, user and data directory are read from the container that owns the volume, so they keep matching the stack. Backup reuses that container when it is running, restore starts a temporary server on the volume. Stop the stack before restoring. See `./db.sh --help` for all options.
 
 ## License
 
