@@ -80,7 +80,6 @@ services:
           cpus: '1.0'
     environment:
       COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios
-      CUSTOM_HOSTNAME: ${CUSTOM_HOSTNAME}
       BOUNCER_KEY_TRAEFIK: ${BOUNCER_KEY}
     volumes:
       - crowdsec-data:/var/lib/crowdsec/data
