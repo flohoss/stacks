@@ -62,6 +62,7 @@ services:
       - '8080:8080'
     networks:
       - proxy
+      - crowdsec
     depends_on:
       crowdsec:
         condition: service_started
@@ -91,11 +92,13 @@ services:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/crowdsec.webp
     networks:
-      - proxy
+      - crowdsec
 
 networks:
   proxy:
     external: true
+  crowdsec:
+    external: false
 
 volumes:
   crowdsec-data:
