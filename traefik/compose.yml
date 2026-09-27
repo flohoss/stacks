@@ -39,6 +39,7 @@ services:
       --providers.docker.network=proxy
       --certificatesresolvers.hetzner.acme.email=${PRIVATE_EMAIL}
       --certificatesresolvers.hetzner.acme.storage=/etc/traefik/acme.json
+      --certificatesresolvers.hetzner.acme.keytype=EC384
       --certificatesresolvers.hetzner.acme.dnschallenge.provider=hetzner
       --certificatesresolvers.hetzner.acme.dnschallenge.resolvers=hydrogen.ns.hetzner.com:53,oxygen.ns.hetzner.com:53
       --certificatesresolvers.hetzner.acme.dnschallenge.propagation.disableanschecks=true
