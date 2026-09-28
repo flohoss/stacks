@@ -50,6 +50,7 @@ services:
     environment:
       BOUNCER_KEY: ${BOUNCER_KEY}
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
+      HETZNER_TTL: '60'
     volumes:
       - ${DIRECTORY}:/etc/traefik
       - ${DIRECTORY}/crowdsec/ban.html:/ban.html:ro
