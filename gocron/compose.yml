@@ -1,6 +1,6 @@
 services:
   gocron:
-    image: ghcr.io/flohoss/gocron:v0.13.0@sha256:efd2f87ac3df91e95866ae7c2ecd4aff1440d213cdb255c6a39f6c7026991ce8
+    image: ghcr.io/flohoss/gocron:v0.13.1@sha256:3dfde5d35de22934738787e6d9eceff3cc030403c3a6b248f4b857e5ee9683d9
     restart: always
     logging:
       options:
