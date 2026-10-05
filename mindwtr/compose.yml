@@ -1,6 +1,6 @@
 services:
   cloud:
-    image: ghcr.io/dongdongbh/mindwtr-cloud:1.3.3@sha256:ad1bfe4537d40e062cbf8aa895bfeb85455c522b8d41be68f1966dbce77a7684
+    image: ghcr.io/dongdongbh/mindwtr-cloud:1.3.4@sha256:8d3281f99858130475a1f37552bad0ca2cf274f53c4022a9915878433792c2a1
     restart: always
     logging:
       options:
@@ -40,7 +40,7 @@ services:
       - proxy
 
   app:
-    image: ghcr.io/dongdongbh/mindwtr-app:1.3.3@sha256:2e7dfa0fb722dc029ad9fa3db711b4a02deb1e585007500bc25c8014b7f0a320
+    image: ghcr.io/dongdongbh/mindwtr-app:1.3.4@sha256:e746943d4bec237266a063e4f8214a2344252827d21f961745a144786cce1398
     restart: always
     logging:
       options:
