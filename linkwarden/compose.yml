@@ -22,7 +22,7 @@ services:
       DATABASE_URL: postgresql://user:password@db:5432/db
       MEILI_HOST: http://meilisearch:7700
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
-      NEXT_PUBLIC_DISABLE_REGISTRATION: 'true'
+      NEXT_PUBLIC_DISABLE_REGISTRATION: ${DISABLE_REGISTRATION:-false}
     volumes:
       - ${DIRECTORY}:/data/data
     labels:
