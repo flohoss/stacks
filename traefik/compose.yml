@@ -26,9 +26,6 @@ services:
       --entrypoints.https.http.encodedCharacters.allowEncodedQuestionMark=true
       --entrypoints.https.http.middlewares=security-headers@file
       --entrypoints.https.http.tls.certresolver=hetzner
-      --accesslog=true
-      --accesslog.format=json
-      --accesslog.bufferingsize=0
       --providers.providersThrottleDuration=2s
       --providers.file.watch=true
       --providers.file.directory=/etc/traefik/config
