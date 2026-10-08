@@ -7,8 +7,6 @@ services:
         max-size: 5m
         max-file: '2'
     hostname: gobackup
-    extra_hosts:
-      - '${EXTRA_HOSTS:-localhost:127.0.0.1}'
     deploy:
       resources:
         limits:
@@ -24,4 +22,4 @@ services:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/restic.webp
     ports:
-      - 8156:8156
+      - ${PORT:-8156}:8156
