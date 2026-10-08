@@ -19,7 +19,7 @@ services:
     volumes:
       - snapotter:/data
     ports:
-      - '${PORT:-1349}:1349'
+      - ${PORT:-1349}:1349
 
 volumes:
   snapotter: {}
