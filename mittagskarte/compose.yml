@@ -23,19 +23,9 @@ services:
       - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
     volumes:
       - ${DIRECTORY}:/app/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.webui=https://${DOMAIN}
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mittagskarte.webp
-      - traefik.enable=true
-      - traefik.http.routers.mittagskarte.entrypoints=https
-      - traefik.http.routers.mittagskarte.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.mittagskarte.tls=true
-      - traefik.http.routers.mittagskarte.tls.certresolver=hetzner
-    expose:
-      - 8090
+    ports:
+      - ${PORT:-8090}:8090
     networks:
-      - proxy
       - net
 
   snapotter:
@@ -61,13 +51,11 @@ services:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/snapotter.webp
     ports:
-      - '1349:1349'
+      - '${PORT:-1349}:1349'
     networks:
       - net
 
 networks:
-  proxy:
-    external: true
   net:
     external: false
 
