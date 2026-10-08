@@ -37,19 +37,9 @@ services:
       FILE_STORAGE_UPLOAD_MAX_SIZE: 20971520
     volumes:
       - ${DIRECTORY}:/var/lib/outline/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.webui=https://${DOMAIN}
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/outline.webp
-      - traefik.enable=true
-      - traefik.http.routers.outline.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.outline.entrypoints=https
-      - traefik.http.routers.outline.tls=true
-      - traefik.http.routers.outline.tls.certresolver=hetzner
-    expose:
-      - 3000
+    ports:
+      - ${PORT:-3000}:3000
     networks:
-      - proxy
       - net
 
   db:
@@ -77,8 +67,6 @@ services:
       - db:/var/lib/postgresql/data
     labels:
       - backup.target=${BACKUP_TARGET:-outline}
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
       - 5432
     networks:
@@ -100,17 +88,12 @@ services:
       test: ['CMD-SHELL', 'redis-cli ping || exit 1']
     volumes:
       - redis:/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
     expose:
       - 6379
     networks:
       - net
 
 networks:
-  proxy:
-    external: true
   net:
     external: false
 
