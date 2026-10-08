@@ -24,9 +24,9 @@ services:
       OIDC_X_FORWARDED_HEADERS: X-Forwarded-Proto X-Forwarded-Host
       OIDC_REMOTE_USER_CLAIM: preferred_username
       INTERNAL_HOST_ALLOWLIST: ${INTERNAL_HOST_ALLOWLIST:-*}
-      LISTEN: 0.0.0.0:8000
+      LISTEN: 0.0.0.0:80
     volumes:
       - ${DIRECTORY}/data:/var/www/FreshRSS/data
       - ${DIRECTORY}/extensions:/var/www/FreshRSS/extensions
     ports:
-      - ${PORT:-8000}:8000
+      - ${PORT:-8000}:80
