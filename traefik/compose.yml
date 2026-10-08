@@ -16,8 +16,6 @@ services:
       --api.insecure=true
       --global.checkNewVersion=false
       --global.sendAnonymousUsage=false
-      --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-      --experimental.plugins.bouncer.version=v1.7.1
       --entrypoints.http.address=:80
       --entrypoints.http.http.redirections.entryPoint.to=https
       --entrypoints.https.address=:443
@@ -26,7 +24,7 @@ services:
       --entrypoints.https.transport.respondingTimeouts.writeTimeout=600s
       --entrypoints.https.http.encodedCharacters.allowEncodedSlash=true
       --entrypoints.https.http.encodedCharacters.allowEncodedQuestionMark=true
-      --entrypoints.https.http.middlewares=crowdsec@file,security-headers@file
+      --entrypoints.https.http.middlewares=security-headers@file
       --entrypoints.https.http.tls.certresolver=hetzner
       --accesslog=true
       --accesslog.format=json
@@ -53,7 +51,6 @@ services:
       HETZNER_TTL: '60'
     volumes:
       - ${DIRECTORY}:/etc/traefik
-      - ${DIRECTORY}/crowdsec/ban.html:/ban.html:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - net.unraid.docker.managed=dockhand
@@ -64,46 +61,10 @@ services:
       - '8080:8080'
     networks:
       - proxy
-      - crowdsec
-    depends_on:
-      crowdsec:
-        condition: service_started
-
-  crowdsec:
-    image: crowdsecurity/crowdsec:v1.8.1@sha256:0f2523fa61ef507f15d953045cface490cc880670c62f2755ced17524107f71a
-    restart: always
-    logging:
-      options:
-        max-size: 10m
-        max-file: '3'
-    deploy:
-      resources:
-        limits:
-          memory: '1G'
-          cpus: '1.0'
-    environment:
-      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios
-      BOUNCER_KEY_TRAEFIK: ${BOUNCER_KEY}
-    volumes:
-      - crowdsec-data:/var/lib/crowdsec/data
-      - ${DIRECTORY}/crowdsec/acquis.d:/etc/crowdsec/acquis.d:ro
-      - ${DIRECTORY}/crowdsec/parsers/s02-enrich/allowlist-ip.yaml:/etc/crowdsec/parsers/s02-enrich/allowlist-ip.yaml:ro
-      - ${DIRECTORY}/crowdsec/simulation.yml:/etc/crowdsec/simulation.yaml:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/crowdsec.webp
-    networks:
-      - crowdsec
 
 networks:
   proxy:
     external: true
-  crowdsec:
-    external: false
-
-volumes:
-  crowdsec-data:
 
 # Example EXTRA_FLAGS:
 # --entrypoints.https.http.tls.domains[0].main=*.unjx.de

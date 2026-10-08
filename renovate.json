@@ -54,25 +54,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/dongdongbh/mindwtr-cloud", "ghcr.io/dongdongbh/mindwtr-app"],
-      "groupName": "Mindwtr",
-      "groupSlug": "mindwtr",
-      "separateMinorPatch": false,
-      "separateMultipleMajor": false
-    },
-    {
-      "matchDatasources": ["docker"],
       "pinDigests": true
-    }
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["**/compose.{yml,yaml}"],
-      "matchStrings": ["--experimental\\.plugins\\.bouncer\\.version=(?<currentValue>v[0-9.]+)"],
-      "depNameTemplate": "maxlerebourg/crowdsec-bouncer-traefik-plugin",
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
     }
   ]
 }
