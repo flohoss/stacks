@@ -37,7 +37,7 @@ services:
       - traefik.http.routers.immich.tls=true
       - traefik.http.routers.immich.tls.certresolver=hetzner
     ports:
-      - ${PORT:2283}:2283
+      - ${PORT:-2283}:2283
     networks:
       - proxy
       - net
