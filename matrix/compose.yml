@@ -23,50 +23,9 @@ services:
     volumes:
       - ${DIRECTORY}:/data
     ports:
-      - ${MATRIX_PORT:-8008}:8008
+      - ${PORT:-8008}:8008
     networks:
       - net
-
-  matrix-wellknown:
-    image: nginxinc/nginx-unprivileged:1.31.6@sha256:ce1317316e272062981736063d4a7eed7d80b0d2a53da1305d0752aa4aee7a48
-    restart: always
-    logging:
-      options:
-        max-size: 5m
-        max-file: '2'
-    deploy:
-      resources:
-        limits:
-          memory: '128M'
-          cpus: '0.25'
-    environment:
-      SYNAPSE_DOMAIN: ${DOMAIN}
-    command: |
-      /bin/sh -c "
-      mkdir -p /tmp/www/.well-known/matrix
-      echo '{\"m.homeserver\": {\"base_url\": \"https://${DOMAIN}\"}}' > /tmp/www/.well-known/matrix/client
-      echo '{\"m.server\": \"${DOMAIN}:443\"}' > /tmp/www/.well-known/matrix/server
-      cat > /tmp/nginx.conf << 'EOF'
-      pid /tmp/nginx.pid;
-      events { worker_connections 1024; }
-
-      http {
-        server {
-          listen 8080;
-          server_name _;
-          location /.well-known/matrix/ {
-            root /tmp/www;
-            default_type application/json;
-            add_header Access-Control-Allow-Origin *;
-            try_files \$$uri =404;
-          }
-        }
-      }
-      EOF
-      nginx -c /tmp/nginx.conf -g 'daemon off;'
-      "
-    ports:
-      - ${WELLKNOWN_PORT:-8080}:8080
 
   db:
     image: postgres:17.11@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
