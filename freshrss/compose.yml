@@ -11,6 +11,8 @@ services:
       options:
         max-size: 5m
         max-file: '2'
+    extra_hosts:
+      - ${EXTRA_HOSTS:-127.0.0.1:localhost}
     environment:
       TZ: Europe/Berlin
       BASE_URL: https://${DOMAIN}
