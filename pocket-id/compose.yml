@@ -21,4 +21,4 @@ services:
     volumes:
       - ${DIRECTORY}:/app/data
     ports:
-      - '${PORT:-1411}:1411'
+      - ${PORT:-1411}:1411
