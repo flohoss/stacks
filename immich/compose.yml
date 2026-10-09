@@ -11,8 +11,6 @@ services:
         limits:
           memory: '4G'
           cpus: '4.0'
-    extra_hosts:
-      - '${EXTRA_HOSTS:-localhost:127.0.0.1}'
     depends_on:
       redis:
         condition: service_healthy
@@ -38,8 +36,8 @@ services:
       - traefik.http.routers.immich.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.immich.tls=true
       - traefik.http.routers.immich.tls.certresolver=hetzner
-    expose:
-      - 2283
+    ports:
+      - ${PORT:2283}:2283
     networks:
       - proxy
       - net
