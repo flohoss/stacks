@@ -22,20 +22,9 @@ services:
       GID: 991
     volumes:
       - ${DIRECTORY}:/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.webui=https://${DOMAIN}
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/synapse.webp
-      - traefik.enable=true
-      - traefik.http.routers.matrix.entrypoints=https
-      - traefik.http.routers.matrix.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.matrix.tls=true
-      - traefik.http.routers.matrix.tls.certresolver=hetzner
-      - traefik.http.routers.matrix.priority=1
-      - traefik.http.routers.matrix.service=matrix
-      - traefik.http.services.matrix.loadbalancer.server.port=8008
+    ports:
+      - ${MATRIX_PORT:-8008}:8008
     networks:
-      - proxy
       - net
 
   matrix-wellknown:
@@ -76,20 +65,8 @@ services:
       EOF
       nginx -c /tmp/nginx.conf -g 'daemon off;'
       "
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.webui=https://${DOMAIN}/.well-known/matrix/server
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/nginx.webp
-      - traefik.enable=true
-      - traefik.http.routers.matrix-wellknown.entrypoints=https
-      - traefik.http.routers.matrix-wellknown.rule=Host(`${DOMAIN}`) && PathPrefix(`/.well-known/matrix/`)
-      - traefik.http.routers.matrix-wellknown.tls=true
-      - traefik.http.routers.matrix-wellknown.tls.certresolver=hetzner
-      - traefik.http.routers.matrix-wellknown.priority=100
-    expose:
-      - 8080
-    networks:
-      - proxy
+    ports:
+      - ${WELLKNOWN_PORT:-8080}:8080
 
   db:
     image: postgres:17.11@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
@@ -115,8 +92,6 @@ services:
       - db:/var/lib/postgresql/data
     labels:
       - backup.target=${BACKUP_TARGET:-matrix}
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
       - 5432
     networks:
@@ -139,9 +114,6 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/signal:/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/signal.webp
     networks:
       - net
 
@@ -162,9 +134,6 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/telegram:/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/telegram.webp
     networks:
       - net
 
@@ -185,9 +154,6 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/whatsapp:/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/whatsapp.webp
     networks:
       - net
 
@@ -208,15 +174,10 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/meta:/data
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/meta.webp
     networks:
       - net
 
 networks:
-  proxy:
-    external: true
   net:
     external: false
 
