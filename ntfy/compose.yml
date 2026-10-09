@@ -18,20 +18,5 @@ services:
     volumes:
       - ${DIRECTORY}/cache:/var/cache/ntfy
       - ${DIRECTORY}/ntfy:/etc/ntfy
-    labels:
-      - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.webui=https://${DOMAIN}
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/ntfy.webp
-      - traefik.enable=true
-      - traefik.http.routers.ntfy.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.ntfy.entrypoints=https
-      - traefik.http.routers.ntfy.tls=true
-      - traefik.http.routers.ntfy.tls.certresolver=hetzner
-    expose:
-      - 80
-    networks:
-      - proxy
-
-networks:
-  proxy:
-    external: true
+    ports:
+      - ${PORT:-80}:80
