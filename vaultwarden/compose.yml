@@ -22,8 +22,8 @@ services:
       - traefik.http.routers.vaultwarden.entrypoints=https
       - traefik.http.routers.vaultwarden.tls=true
       - traefik.http.routers.vaultwarden.tls.certresolver=hetzner
-    expose:
-      - 80
+    ports:
+      - ${PORT:-8080}:80
     networks:
       - proxy
 
