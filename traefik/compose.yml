@@ -43,7 +43,6 @@ services:
       --serversTransport.insecureSkipVerify=true
       ${TRAEFIK_EXTRA_FLAGS:-}
     environment:
-      BOUNCER_KEY: ${BOUNCER_KEY}
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
       HETZNER_TTL: '60'
     volumes:
