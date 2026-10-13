@@ -1,6 +1,6 @@
 services:
   pocket-id:
-    image: ghcr.io/pocket-id/pocket-id:v2.18.0@sha256:323e7ef5bfacf7cf32f22f3d10ccdf48e0c97c94d67e7e40b0b996830deb5165
+    image: ghcr.io/pocket-id/pocket-id:v2.18.0-distroless@sha256:138d106737498f6c20d0bec854b872bc77ec520d7a9b54502444a260a49c41cb
     restart: always
     logging:
       options:
@@ -11,13 +11,16 @@ services:
         limits:
           memory: '256M'
           cpus: '0.5'
+    read_only: true
+    user: '1000:1000'
     environment:
       APP_URL: https://${DOMAIN}
       TRUST_PROXY: true
-      PUID: 1000
-      PGID: 1000
       ANALYTICS_DISABLED: true
+      VERSION_CHECK_DISABLED: true
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
     volumes:
       - ${DIRECTORY}:/app/data
     ports:
