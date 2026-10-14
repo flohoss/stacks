@@ -30,7 +30,7 @@ services:
       - ${OLD_DATA_DIR}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     labels:
-      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.managed=composeman
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/immich.webp
       - traefik.enable=true
@@ -68,7 +68,7 @@ services:
     volumes:
       - cache:/cache
     labels:
-      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.managed=composeman
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/immich.webp
     networks:
       - net
@@ -92,7 +92,7 @@ services:
     volumes:
       - redis:/data
     labels:
-      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.managed=composeman
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
     networks:
       - net
@@ -124,7 +124,7 @@ services:
       - db:/var/lib/postgresql/data
     labels:
       - backup.target=${BACKUP_TARGET:-immich}
-      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.managed=composeman
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
       - 5432

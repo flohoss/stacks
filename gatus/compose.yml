@@ -14,5 +14,8 @@ services:
     volumes:
       - ${DIRECTORY}/config:/config
       - ${DIRECTORY}/data:/data/
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/gatus.webp
     ports:
       - ${PORT:-8080}:8080
