@@ -1,0 +1,72 @@
+services:
+  hoodik:
+    image: hudik/hoodik:v2.5.6@sha256:368a2a3004b594e167e7ea987258d38bc602900e741b2203aab635c8d9a74a66
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          memory: '512M'
+          cpus: '1.0'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      TZ: Europe/Berlin
+      APP_URL: https://${DOMAIN}
+      DATA_DIR: /data
+      DATABASE_URL: postgres://user:password@db:5432/db
+      JWT_SECRET: ${SECRET_KEY}
+      SSL_DISABLED: 'true'
+      MAILER_TYPE: ${MAILER_TYPE:-none}
+      SMTP_ADDRESS: ${SMTP_ADDRESS}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_DEFAULT_FROM_EMAIL: ${SMTP_DEFAULT_FROM_EMAIL}
+    volumes:
+      - ${DIRECTORY}:/data
+    ports:
+      - ${PORT:-5443}:5443
+    networks:
+      - net
+
+  db:
+    image: postgres:17.11@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+    restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db:/var/lib/postgresql/data
+    labels:
+      - backup.target=${BACKUP_TARGET:-hoodik}
+    expose:
+      - 5432
+    networks:
+      - net
+
+networks:
+  net:
+    external: false
+
+volumes:
+  db: {}
