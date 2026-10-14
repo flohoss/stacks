@@ -56,10 +56,9 @@ services:
       - traefik.http.routers.seafile.entrypoints=https
       - traefik.http.routers.seafile.tls=true
       - traefik.http.routers.seafile.tls.certresolver=hetzner
-    expose:
-      - 80
+    ports:
+      - ${PORT:-8080}:80
     networks:
-      - proxy
       - net
 
   db:
@@ -148,20 +147,12 @@ services:
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
-      - traefik.enable=true
-      - traefik.http.routers.seadoc.rule=Host(`${SEADOC_SERVER_HOSTNAME}`)
-      - traefik.http.routers.seadoc.entrypoints=https
-      - traefik.http.routers.seadoc.tls=true
-      - traefik.http.routers.seadoc.tls.certresolver=hetzner
     expose:
       - 80
     networks:
       - net
-      - proxy
 
 networks:
-  proxy:
-    external: true
   net:
     external: false
 
