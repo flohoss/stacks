@@ -33,7 +33,7 @@ services:
       TIME_ZONE: Europe/Berlin
       INIT_SEAFILE_ADMIN_EMAIL: ${PRIVATE_EMAIL}
       INIT_SEAFILE_ADMIN_PASSWORD: admin
-      SEAFILE_SERVER_HOSTNAME: ${SEAFILE_SERVER_HOSTNAME}
+      SEAFILE_SERVER_HOSTNAME: ${DOMAIN}
       SEAFILE_SERVER_PROTOCOL: https
       SITE_ROOT: /
       NON_ROOT: false
@@ -41,7 +41,7 @@ services:
       SEAFILE_LOG_TO_STDOUT: false
       ENABLE_GO_FILESERVER: true
       ENABLE_SEADOC: true
-      SEADOC_SERVER_URL: https://${SEADOC_SERVER_HOSTNAME}
+      SEADOC_SERVER_URL: http://seadoc:80
       CACHE_PROVIDER: redis
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -49,10 +49,10 @@ services:
       - ${DIRECTORY}/shared:/shared
     labels:
       - net.unraid.docker.managed=dockhand
-      - net.unraid.docker.webui=https://${SEAFILE_SERVER_HOSTNAME}
+      - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
       - traefik.enable=true
-      - traefik.http.routers.seafile.rule=Host(`${SEAFILE_SERVER_HOSTNAME}`)
+      - traefik.http.routers.seafile.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.seafile.entrypoints=https
       - traefik.http.routers.seafile.tls=true
       - traefik.http.routers.seafile.tls.certresolver=hetzner
@@ -142,7 +142,7 @@ services:
       TIME_ZONE: Europe/Berlin
       JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
       NON_ROOT: false
-      SEAHUB_SERVICE_URL: https://${SEAFILE_SERVER_HOSTNAME}
+      SEAHUB_SERVICE_URL: https://${DOMAIN}
     volumes:
       - seadoc:/shared
     labels:
