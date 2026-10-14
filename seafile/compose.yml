@@ -59,6 +59,7 @@ services:
     ports:
       - ${PORT:-8080}:80
     networks:
+      - proxy
       - net
 
   db:
@@ -153,6 +154,8 @@ services:
       - net
 
 networks:
+  proxy:
+    external: true
   net:
     external: false
 
