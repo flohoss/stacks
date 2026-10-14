@@ -143,7 +143,7 @@ services:
       - net.unraid.docker.managed=composeman
       - net.unraid.docker.webui=https://${SEADOC_DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
-    expose:
+    ports:
       - ${SEADOC_PORT:-80}:80
     networks:
       - net
