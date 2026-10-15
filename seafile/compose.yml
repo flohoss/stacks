@@ -45,6 +45,9 @@ services:
       CACHE_PROVIDER: redis
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      ENABLE_NOTIFICATION_SERVER: true
+      NOTIFICATION_SERVER_URL: https://${SEAFILE_DOMAIN}/notification
+      INNER_NOTIFICATION_SERVER_URL: http://notification:8083
     volumes:
       - ${DIRECTORY}/shared:/shared
     labels:
@@ -53,6 +56,40 @@ services:
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
     ports:
       - ${SEAFILE_PORT:-80}:80
+    networks:
+      - net
+
+  notification:
+    image: seafileltd/notification-server:13.0.21@sha256:1cac4101d0f4527ad08c00b5452ceb05d790db95d6c8ab6bbace82429c1e5217
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          memory: '256M'
+          cpus: '0.5'
+    depends_on:
+      db:
+        condition: service_healthy
+      seafile:
+        condition: service_healthy
+    environment:
+      SEAFILE_MYSQL_DB_HOST: db
+      SEAFILE_MYSQL_DB_USER: user
+      SEAFILE_MYSQL_DB_PASSWORD: password
+      SEAFILE_MYSQL_DB_CCNET_DB_NAME: ccnet_db
+      SEAFILE_MYSQL_DB_SEAFILE_DB_NAME: seafile_db
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
+      SEAFILE_LOG_TO_STDOUT: true
+      NOTIFICATION_SERVER_LOG_LEVEL: info
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
+    ports:
+      - ${NOTIFICATION_PORT:-8083}:8083
     networks:
       - net
 
