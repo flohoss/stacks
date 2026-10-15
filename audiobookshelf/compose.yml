@@ -1,0 +1,27 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:2.37.1@sha256:581d68b2a6fc7ebf58d81c878a9f387cbbc0d88ac9d37b298b9cee10168af85b
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      - ${DATA_DIR}/audio/audiobooks:/audiobooks
+      - ${DATA_DIR}/audio/podcasts:/podcasts
+      - ${DIRECTORY}/audiobookshelf:/config
+      - ${DATA_DIR}/audio/metadata:/metadata
+    labels:
+      - net.unraid.docker.managed=dockhand
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/audiobookshelf.webp
+    ports:
+      - ${PORT:-8080}:80
+    networks:
+      - proxy
