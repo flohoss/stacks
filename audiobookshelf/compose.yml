@@ -14,10 +14,10 @@ services:
     environment:
       TZ: Europe/Berlin
     volumes:
-      - ${DATA_DIR}/audio/audiobooks:/audiobooks
-      - ${DATA_DIR}/audio/podcasts:/podcasts
-      - ${DIRECTORY}/audiobookshelf:/config
-      - ${DATA_DIR}/audio/metadata:/metadata
+      - ${DIRECTORY}/audiobooks:/audiobooks
+      - ${DIRECTORY}/podcasts:/podcasts
+      - ${DIRECTORY}/config:/config
+      - ${DIRECTORY}/metadata:/metadata
     labels:
       - net.unraid.docker.managed=dockhand
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/audiobookshelf.webp
