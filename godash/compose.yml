@@ -1,6 +1,6 @@
 services:
   godash:
-    image: ghcr.io/flohoss/godash:v1.6.3@sha256:b124404f36d94d7a3721d7cb9008404e9f54155b956abf4c16125a0c5ba8a8eb
+    image: ghcr.io/flohoss/godash:v1.7.0@sha256:0da2fe5f4e14e728245ca20f0742e75bbce519b90c2661755e70de0931fb83c8
     restart: always
     logging:
       options:
