@@ -13,6 +13,7 @@ services:
           cpus: '1.0'
     environment:
       TZ: Europe/Berlin
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     volumes:
       - ${DIRECTORY}/audiobooks:/audiobooks
       - ${DIRECTORY}/podcasts:/podcasts
