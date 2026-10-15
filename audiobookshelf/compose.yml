@@ -23,5 +23,3 @@ services:
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/audiobookshelf.webp
     ports:
       - ${PORT:-8080}:80
-    networks:
-      - proxy
