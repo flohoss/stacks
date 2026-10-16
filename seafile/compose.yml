@@ -151,7 +151,7 @@ services:
       - net
 
   seadoc:
-    image: seafileltd/sdoc-server:2.0.9@sha256:5b1bf5a8bfdb8bc5db957e7faee2220111fd6eff00795eaaf172e2f80bb999a5
+    image: seafileltd/sdoc-server:3.0.6@sha256:324113195143e713a170f41ef894c01346170765a54b1aae3366ef2fe5b3de14
     restart: always
     logging:
       options:
