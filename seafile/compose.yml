@@ -41,11 +41,16 @@ services:
       SEAFILE_LOG_TO_STDOUT: false
       ENABLE_GO_FILESERVER: true
       ENABLE_SEADOC: true
-      SEADOC_SERVER_URL: https://${SEADOC_DOMAIN}
+      # Reverse proxy needs two rules against seadoc:80: `/sdoc-server` with the
+      # prefix stripped, and `/socket.io` with the full path preserved (the editor
+      # connects to <origin>/socket.io, not under the prefix).
+      SEADOC_SERVER_URL: https://${SEAFILE_DOMAIN}/sdoc-server
       CACHE_PROVIDER: redis
       REDIS_HOST: redis
       REDIS_PORT: 6379
       ENABLE_NOTIFICATION_SERVER: true
+      # Reverse proxy: `/notification` -> notification:8083. The server answers on
+      # both / and /notification, so stripping or preserving the prefix both work.
       NOTIFICATION_SERVER_URL: https://${SEAFILE_DOMAIN}/notification
       INNER_NOTIFICATION_SERVER_URL: http://notification:8083
     volumes:
@@ -56,6 +61,40 @@ services:
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
     ports:
       - ${SEAFILE_PORT:-80}:80
+    networks:
+      - net
+
+  seadoc:
+    image: seafileltd/sdoc-server:3.0.6@sha256:324113195143e713a170f41ef894c01346170765a54b1aae3366ef2fe5b3de14
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '1.0'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: seahub_db
+      TIME_ZONE: Europe/Berlin
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
+      NON_ROOT: false
+      SEAHUB_SERVICE_URL: http://seafile:80
+    volumes:
+      - seadoc:/shared
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
+    ports:
+      - ${SEADOC_PORT:-8082}:80
     networks:
       - net
 
@@ -106,7 +145,14 @@ services:
           memory: '1G'
           cpus: '1.0'
     healthcheck:
-      test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect', '--mariadbupgrade', '--innodb_initialized']
+      test:
+        [
+          'CMD',
+          '/usr/local/bin/healthcheck.sh',
+          '--connect',
+          '--mariadbupgrade',
+          '--innodb_initialized',
+        ]
       interval: 20s
       start_period: 30s
       timeout: 5s
@@ -147,41 +193,6 @@ services:
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
     expose:
       - 6379
-    networks:
-      - net
-
-  seadoc:
-    image: seafileltd/sdoc-server:3.0.6@sha256:324113195143e713a170f41ef894c01346170765a54b1aae3366ef2fe5b3de14
-    restart: always
-    logging:
-      options:
-        max-size: 10m
-        max-file: '3'
-    deploy:
-      resources:
-        limits:
-          memory: '1G'
-          cpus: '1.0'
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DB_HOST: db
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: seahub_db
-      TIME_ZONE: Europe/Berlin
-      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
-      NON_ROOT: false
-      SEAHUB_SERVICE_URL: https://${SEAFILE_DOMAIN}
-    volumes:
-      - seadoc:/shared
-    labels:
-      - net.unraid.docker.managed=composeman
-      - net.unraid.docker.webui=https://${SEADOC_DOMAIN}
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
-    ports:
-      - ${SEADOC_PORT:-80}:80
     networks:
       - net
 
