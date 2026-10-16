@@ -23,5 +23,8 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-info}
     volumes:
       - ${DIRECTORY}:/app/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/pocket-id.webp
     ports:
-      - ${PORT:-1411}:1411
+      - '${HOST_BINDING:-127.0.0.1:1411}:1411'

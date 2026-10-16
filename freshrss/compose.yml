@@ -35,4 +35,4 @@ services:
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/freshrss.webp
     ports:
-      - ${PORT:-8000}:80
+      - '${HOST_BINDING:-127.0.0.1:8000}:80'

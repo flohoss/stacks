@@ -37,8 +37,12 @@ services:
       FILE_STORAGE_UPLOAD_MAX_SIZE: 20971520
     volumes:
       - ${DIRECTORY}:/var/lib/outline/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/outline.webp
     ports:
-      - ${PORT:-3000}:3000
+      - '${HOST_BINDING:-127.0.0.1:3000}:3000'
     networks:
       - net
 
@@ -67,6 +71,8 @@ services:
       - db:/var/lib/postgresql/data
     labels:
       - backup.target=${BACKUP_TARGET:-outline}
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
       - 5432
     networks:
@@ -88,6 +94,9 @@ services:
       test: ['CMD-SHELL', 'redis-cli ping || exit 1']
     volumes:
       - redis:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
     expose:
       - 6379
     networks:

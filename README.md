@@ -11,25 +11,29 @@ This repository uses [Renovate](https://github.com/renovatebot/renovate) to auto
 
 ## Unraid Compatibility
 
-All services include Unraid Docker labels for easy management in Unraid's Docker UI:
+All runtime services include the Unraid management label. Application services also include an icon and, where applicable, a WebUI URL:
 
 - `net.unraid.docker.managed=composeman`
-- `net.unraid.docker.webui=https://[IP]:[PORT:PORT]`
-- `net.unraid.docker.icon=<icon-url>`
+- `net.unraid.docker.webui=<service-url>` (where applicable)
+- `net.unraid.docker.icon=<icon-url>` (where available)
 
 ## Reverse Proxy
 
-All services are configured to work with [Traefik](https://github.com/traefik/traefik) as a reverse proxy with:
+The repository includes [Traefik](https://github.com/traefik/traefik) as a reverse proxy with:
 
 - Automatic HTTPS via Let's Encrypt
 - hetzner DNS challenge for certificate generation
-- Automatic service discovery via Docker labels
+- Docker-provider discovery for services with Traefik router labels
+
+Only services with Traefik router labels are discovered automatically by its Docker provider; other services need router labels or separate Traefik file-provider configuration to be proxied.
+
+Published application ports default to `127.0.0.1`. Set `HOST_BINDING` to a host binding such as `127.0.0.1:8081` to change the port while keeping it loopback-only. A value with only a port, such as `8081`, binds on all host interfaces. Seafile uses separate `SEAFILE_HOST_BINDING`, `SEADOC_HOST_BINDING`, and `NOTIFICATION_HOST_BINDING` variables for its published ports. Traefik's HTTP and HTTPS ports (`80` and `443`) and Forgejo's SSH port (`30:22`) are deliberate public-binding exceptions.
 
 ## Notes
 
 - All PostgreSQL, Redis and MariaDB images use a pinned major version
 - All images use digest pinning for reproducible deployments
-- Healthchecks are configured with `depends_on` for proper startup ordering
+- Dependencies have healthchecks where needed, and dependent services wait for them to become healthy
 
 ## Database Backups
 

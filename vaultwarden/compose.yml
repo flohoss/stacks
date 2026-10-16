@@ -23,7 +23,7 @@ services:
       - traefik.http.routers.vaultwarden.tls=true
       - traefik.http.routers.vaultwarden.tls.certresolver=hetzner
     ports:
-      - ${PORT:-8080}:80
+      - '${HOST_BINDING:-127.0.0.1:8080}:80'
     networks:
       - proxy
 

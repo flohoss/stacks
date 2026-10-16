@@ -22,8 +22,11 @@ services:
       GID: 991
     volumes:
       - ${DIRECTORY}:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/matrix.webp
     ports:
-      - ${PORT:-8008}:8008
+      - '${HOST_BINDING:-127.0.0.1:8008}:8008'
     networks:
       - net
 
@@ -51,6 +54,8 @@ services:
       - db:/var/lib/postgresql/data
     labels:
       - backup.target=${BACKUP_TARGET:-matrix}
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
     expose:
       - 5432
     networks:
@@ -73,6 +78,9 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/signal:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/signal.webp
     networks:
       - net
 
@@ -93,6 +101,9 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/telegram:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/telegram.webp
     networks:
       - net
 
@@ -113,6 +124,9 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/whatsapp:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/whatsapp.webp
     networks:
       - net
 
@@ -133,6 +147,9 @@ services:
           cpus: '0.25'
     volumes:
       - ${DIRECTORY}/meta:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/meta.webp
     networks:
       - net
 

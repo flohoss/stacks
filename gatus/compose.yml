@@ -18,4 +18,4 @@ services:
       - net.unraid.docker.managed=composeman
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/gatus.webp
     ports:
-      - ${PORT:-8080}:8080
+      - '${HOST_BINDING:-127.0.0.1:8080}:8080'

@@ -24,5 +24,7 @@ services:
       - SNAPOTTER_URL=${SNAPOTTER_URL}
     volumes:
       - ${DIRECTORY}:/app/data
+    labels:
+      - net.unraid.docker.managed=composeman
     ports:
-      - ${PORT:-8090}:8090
+      - '${HOST_BINDING:-127.0.0.1:8090}:8090'

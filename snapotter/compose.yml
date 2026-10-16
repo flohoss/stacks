@@ -18,8 +18,11 @@ services:
       DEFAULT_THEME: dark
     volumes:
       - snapotter:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/snapotter.webp
     ports:
-      - ${PORT:-1349}:1349
+      - '${HOST_BINDING:-127.0.0.1:1349}:1349'
 
 volumes:
   snapotter: {}

@@ -20,6 +20,6 @@ services:
       - ${DATA_MOUNT}
     labels:
       - net.unraid.docker.managed=composeman
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/restic.webp
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/gocron.webp
     ports:
-      - ${PORT:-8156}:8156
+      - '${HOST_BINDING:-127.0.0.1:8156}:8156'
