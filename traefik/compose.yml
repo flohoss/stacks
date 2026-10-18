@@ -18,7 +18,9 @@ services:
       --global.sendAnonymousUsage=false
       --entrypoints.http.address=:80
       --entrypoints.http.http.redirections.entryPoint.to=https
+      --entrypoints.http.http.aliasHeadersStrategy=delete
       --entrypoints.https.address=:443
+      --entrypoints.https.http.aliasHeadersStrategy=delete
       --entrypoints.https.transport.respondingTimeouts.readTimeout=600s
       --entrypoints.https.transport.respondingTimeouts.idleTimeout=600s
       --entrypoints.https.transport.respondingTimeouts.writeTimeout=600s
