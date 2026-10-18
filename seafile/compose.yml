@@ -132,6 +132,32 @@ services:
     networks:
       - net
 
+  onlyoffice:
+    image: onlyoffice/documentserver:10.0.0@sha256:ca17889f10b11141cc6441836aebdd2835cf3e1b49681b2fd6e155c94b7850b3
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          memory: '2G'
+          cpus: '2.0'
+    environment:
+      JWT_ENABLED: 'true'
+      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET}
+    volumes:
+      - onlyoffice:/var/lib/onlyoffice
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=https://${DOMAIN}/oods
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/onlyoffice.webp
+    ports:
+      - '${ONLYOFFICE_HOST_BINDING:-127.0.0.1:8084}:80'
+    networks:
+      - net
+
   db:
     image: mariadb:10.11.19@sha256:0d0945c57f75b3a3b9ebe71aedaaad005fa5305054e8fca3d2e42a8c92b43b5e
     restart: always
@@ -204,3 +230,4 @@ volumes:
   db: {}
   redis: {}
   seadoc: {}
+  onlyoffice: {}
