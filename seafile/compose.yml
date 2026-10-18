@@ -151,6 +151,8 @@ services:
       - onlyoffice:/var/lib/onlyoffice
     labels:
       - net.unraid.docker.managed=composeman
+      # Reverse Proxy: `/oods` -> onlyoffice:80.
+      # Set the proxy to strip the prefix and send custom header `X-Forwarded-Prefix: /oods`.
       - net.unraid.docker.webui=https://${DOMAIN}/oods
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/onlyoffice.webp
     ports:
