@@ -58,7 +58,7 @@ services:
       - ./dashboard.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.netbird-dashboard.rule=Host(`net.fhoss.de`)
+      - traefik.http.routers.netbird-dashboard.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.netbird-dashboard.entrypoints=websecure
       - traefik.http.routers.netbird-dashboard.tls=true
       - traefik.http.routers.netbird-dashboard.tls.certresolver=letsencrypt
@@ -94,19 +94,19 @@ services:
     command: ['--config', '/etc/netbird/config.yaml']
     labels:
       - traefik.enable=true
-      - traefik.http.routers.netbird-grpc.rule=Host(`net.fhoss.de`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))
+      - traefik.http.routers.netbird-grpc.rule=Host(`${DOMAIN}`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))
       - traefik.http.routers.netbird-grpc.entrypoints=websecure
       - traefik.http.routers.netbird-grpc.tls=true
       - traefik.http.routers.netbird-grpc.tls.certresolver=letsencrypt
       - traefik.http.routers.netbird-grpc.service=netbird-server-h2c
       - traefik.http.routers.netbird-grpc.priority=100
-      - traefik.http.routers.netbird-backend.rule=Host(`net.fhoss.de`) && (PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`) || PathPrefix(`/api`) || PathPrefix(`/oauth2`))
+      - traefik.http.routers.netbird-backend.rule=Host(`${DOMAIN}`) && (PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`) || PathPrefix(`/api`) || PathPrefix(`/oauth2`))
       - traefik.http.routers.netbird-backend.entrypoints=websecure
       - traefik.http.routers.netbird-backend.tls=true
       - traefik.http.routers.netbird-backend.tls.certresolver=letsencrypt
       - traefik.http.routers.netbird-backend.service=netbird-server
       - traefik.http.routers.netbird-backend.priority=100
-      - traefik.http.routers.netbird-dashboard-api.rule=Host(`net.fhoss.de`) && (PathPrefix(`/api`) || PathPrefix(`/oauth2`))
+      - traefik.http.routers.netbird-dashboard-api.rule=Host(`${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/oauth2`))
       - traefik.http.routers.netbird-dashboard-api.entrypoints=websecure
       - traefik.http.routers.netbird-dashboard-api.tls=true
       - traefik.http.routers.netbird-dashboard-api.tls.certresolver=letsencrypt
