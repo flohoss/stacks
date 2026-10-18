@@ -26,15 +26,21 @@
       "allowedVersions": "10.x"
     },
     {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["getmeili/meilisearch"],
-      "allowedVersions": "1.x"
+      "matchManagers": ["custom.regex"],
+      "matchFileNames": ["netbird/**"],
+      "matchDepNames": ["maxlerebourg/crowdsec-bouncer-traefik-plugin"],
+      "enabled": false
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["cryptpad/cryptpad"],
-      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      "extractVersion": "^version-(?<version>.+)$"
+      "matchFileNames": ["netbird/**"],
+      "matchDepNames": ["traefik", "crowdsecurity/crowdsec"],
+      "enabled": false
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["netbirdio/dashboard", "netbirdio/netbird-server", "netbirdio/reverse-proxy"],
+      "groupName": "NetBird"
     },
     {
       "matchDatasources": ["docker"],
@@ -55,6 +61,17 @@
     {
       "matchDatasources": ["docker"],
       "pinDigests": true
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track the Traefik CrowdSec bouncer plugin, which is a Traefik command flag rather than an image",
+      "managerFilePatterns": ["**/compose.{yml,yaml}"],
+      "matchStrings": ["--experimental\\.plugins\\.bouncer\\.version=(?<currentValue>v[0-9.]+)"],
+      "depNameTemplate": "maxlerebourg/crowdsec-bouncer-traefik-plugin",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
     }
   ]
 }
