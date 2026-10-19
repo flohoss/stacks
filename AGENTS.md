@@ -18,14 +18,13 @@ Read before making changes.
 
 Dependency PRs are merged as-is. Two exceptions:
 
-- **NetBird** (`netbird/`) — PRs bump `netbird-server`, `reverse-proxy` and
-  `dashboard` together. Before merging:
-  1. Check the NetBird release notes for the bumped version.
-  2. Keep `reverse-proxy` and `netbird-server` on the same version.
-  3. Verify [netbird/compose.yml](netbird/compose.yml) still matches
-     https://docs.netbird.io/selfhosted/maintenance/upgrade — the docs table is
-     the source of truth for `traefik`, `crowdsecurity/crowdsec` and the bouncer
-     plugin, which Renovate is disabled for (the root [traefik/](traefik/) stack
-     tracks traefik separately and is intentionally allowed to run ahead).
-  4. After a server upgrade, apply it with `docker compose up -d` (not
-     `restart`) and check the stack still serves `200`.
+- **NetBird** (`netbird/`) — Renovate bumps `netbird-server`, `reverse-proxy`
+  and `dashboard` together; merge the images as-is.
+
+  Then compare `traefik`, `crowdsecurity/crowdsec` and the bouncer plugin flag
+  in [netbird/compose.yml](netbird/compose.yml) with the validated table on
+  https://docs.netbird.io/selfhosted/maintenance/upgrade. If one differs, set it
+  to the table value; otherwise leave the file unchanged. The root
+  [traefik/](traefik/) stack is tracked separately and may run ahead.
+
+  That comparison is the whole task. Do not deploy or test the stack.
