@@ -20,4 +20,4 @@ services:
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/memos.webp
     ports:
-      - '${HOST_BINDING:-127.0.0.1:8081}:8081'
+      - '${HOST_BINDING:-127.0.0.1:5230}:5230'
