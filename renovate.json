@@ -8,6 +8,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/immich-app/postgres"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
       "enabled": false
     },
     {
