@@ -43,8 +43,6 @@ services:
     networks:
       - proxy
       - net
-    healthcheck:
-      disable: false
 
   machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:v3.3.5@sha256:5b28c9352c8374b8a1ed96fbdd8d6755fea6e43510ec43fdf6538aa02ea40f56
@@ -60,11 +58,6 @@ services:
           cpus: '4.0'
     environment:
       TZ: Europe/Berlin
-      DB_PASSWORD: password
-      DB_USERNAME: user
-      DB_DATABASE_NAME: db
-      DB_HOSTNAME: db
-      REDIS_HOSTNAME: redis
     volumes:
       - cache:/cache
     labels:
@@ -72,8 +65,6 @@ services:
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/immich.webp
     networks:
       - net
-    healthcheck:
-      disable: false
 
   redis:
     image: docker.io/valkey/valkey:9.1.2@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
