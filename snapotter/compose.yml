@@ -9,8 +9,8 @@ services:
     deploy:
       resources:
         limits:
+          memory: '1G'
           cpus: '2.0'
-          memory: '1g'
     environment:
       TZ: Europe/Berlin
       AUTH_ENABLED: false
