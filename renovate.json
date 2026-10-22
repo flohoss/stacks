@@ -46,7 +46,6 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/immich-app/immich-machine-learning", "ghcr.io/immich-app/immich-server"],
       "groupName": "Immich",
-      "groupSlug": "immich",
       "separateMinorPatch": false,
       "separateMultipleMajor": false
     },
@@ -54,7 +53,6 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["dock.mau.dev/mautrix/signal", "dock.mau.dev/mautrix/telegram", "dock.mau.dev/mautrix/whatsapp", "dock.mau.dev/mautrix/meta"],
       "groupName": "Mautrix",
-      "groupSlug": "mautrix",
       "separateMinorPatch": false,
       "separateMultipleMajor": false
     },
