@@ -11,23 +11,24 @@ This repository uses [Renovate](https://github.com/renovatebot/renovate) to auto
 
 ## Unraid Compatibility
 
-All runtime services include the Unraid management label. Application services also include an icon and, where applicable, a WebUI URL:
+Runtime services include the Unraid management label. Application services also include an icon and, where applicable, a WebUI URL:
 
 - `net.unraid.docker.managed=composeman`
 - `net.unraid.docker.webui=<service-url>` (where applicable)
 - `net.unraid.docker.icon=<icon-url>` (where available)
 
+The NetBird stack ([netbird/](netbird/)) is the exception: it runs its own Traefik instance and ships without Unraid labels.
+
 ## Reverse Proxy
 
-The repository includes [Traefik](https://github.com/traefik/traefik) as a reverse proxy with:
+Stacks are published in one of two ways:
 
-- Automatic HTTPS via Let's Encrypt
-- hetzner DNS challenge for certificate generation
-- Docker-provider discovery for services with Traefik router labels
+- **Root Traefik** — [traefik/](traefik/) terminates TLS (Let's Encrypt via the Hetzner DNS challenge) and discovers stacks over the external `proxy` network. These stacks carry `traefik.*` router labels.
+- **NetBird reverse proxy** — [netbird/](netbird/) runs its own Traefik instance with router labels in the `netbird` network. Stacks without Traefik labels are published through the NetBird proxy service instead.
 
-Only services with Traefik router labels are discovered automatically by its Docker provider; other services need router labels or separate Traefik file-provider configuration to be proxied.
+Only services with Traefik router labels are discovered automatically by Traefik's Docker provider; every other service needs router labels or separate file-provider configuration to be proxied. Each stack's `compose.yml` shows which mode it uses: a `traefik.enable` label means the root Traefik handles it, while an unlabelled stack is routed by NetBird.
 
-Published application ports default to `127.0.0.1`. Set `HOST_BINDING` to a host binding such as `127.0.0.1:8081` to change the port while keeping it loopback-only. A value with only a port, such as `8081`, binds on all host interfaces. Seafile uses separate `SEAFILE_HOST_BINDING`, `SEADOC_HOST_BINDING`, and `NOTIFICATION_HOST_BINDING` variables for its published ports. Traefik's HTTP and HTTPS ports (`80` and `443`) and Forgejo's SSH port (`30:22`) are deliberate public-binding exceptions.
+Published application ports default to `127.0.0.1`. Set `HOST_BINDING` to a host binding such as `127.0.0.1:8081` to change the port while keeping it loopback-only. A value with only a port, such as `8081`, binds on all host interfaces. Seafile uses separate `SEAFILE_HOST_BINDING`, `SEADOC_HOST_BINDING`, `NOTIFICATION_HOST_BINDING` and `ONLYOFFICE_HOST_BINDING` variables for its published ports. Traefik's HTTP and HTTPS ports (`80` and `443`), NetBird's WireGuard and relay ports (`3478/udp`, `51820/udp`) and Forgejo's SSH port (`30:22`) are deliberate public-binding exceptions.
 
 ## Notes
 
