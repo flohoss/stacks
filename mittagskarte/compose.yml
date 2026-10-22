@@ -9,19 +9,19 @@ services:
     deploy:
       resources:
         limits:
+          memory: '512M'
           cpus: '2.0'
-          memory: '512m'
     environment:
-      - IMPRINT_EMAIL=${IMPRINT_EMAIL}
-      - APP_URL=https://${DOMAIN}
-      - SMTP_SENDER_ADDRESS=${SMTP_SENDER_ADDRESS}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - SUPERUSER_EMAIL=${SUPERUSER_EMAIL}
-      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
-      - SNAPOTTER_URL=${SNAPOTTER_URL}
+      IMPRINT_EMAIL: ${IMPRINT_EMAIL}
+      APP_URL: https://${DOMAIN}
+      SMTP_SENDER_ADDRESS: ${SMTP_SENDER_ADDRESS}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SUPERUSER_EMAIL: ${SUPERUSER_EMAIL}
+      SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD}
+      SNAPOTTER_URL: ${SNAPOTTER_URL}
     volumes:
       - ${DIRECTORY}:/app/data
     labels:
