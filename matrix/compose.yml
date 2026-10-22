@@ -80,7 +80,7 @@ services:
       - ${DIRECTORY}/signal:/data
     labels:
       - net.unraid.docker.managed=composeman
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/signal.webp
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/signal.webp
     networks:
       - net
 
@@ -103,7 +103,7 @@ services:
       - ${DIRECTORY}/telegram:/data
     labels:
       - net.unraid.docker.managed=composeman
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/telegram.webp
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/telegram.webp
     networks:
       - net
 
@@ -126,7 +126,7 @@ services:
       - ${DIRECTORY}/whatsapp:/data
     labels:
       - net.unraid.docker.managed=composeman
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/whatsapp.webp
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/whatsapp.webp
     networks:
       - net
 
@@ -149,7 +149,7 @@ services:
       - ${DIRECTORY}/meta:/data
     labels:
       - net.unraid.docker.managed=composeman
-      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/meta.webp
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/meta.webp
     networks:
       - net
 
