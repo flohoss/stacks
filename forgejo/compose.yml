@@ -82,5 +82,4 @@ networks:
     external: false
 
 volumes:
-  data: {}
   db: {}
