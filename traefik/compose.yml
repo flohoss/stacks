@@ -52,6 +52,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=http://${HOST_BINDING}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/traefik.webp
     ports:
       - '80:80'

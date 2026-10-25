@@ -26,5 +26,6 @@ services:
       - ${DIRECTORY}:/app/data
     labels:
       - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=http://${HOST_BINDING}
     ports:
       - '${HOST_BINDING:-127.0.0.1:8090}:8090'

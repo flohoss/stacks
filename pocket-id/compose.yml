@@ -25,6 +25,7 @@ services:
       - ${DIRECTORY}:/app/data
     labels:
       - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/pocket-id.webp
     ports:
       - '${HOST_BINDING:-127.0.0.1:1411}:1411'

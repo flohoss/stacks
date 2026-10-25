@@ -15,13 +15,8 @@ services:
       - ${DIRECTORY}/data:/data
     labels:
       - net.unraid.docker.managed=composeman
-      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.webui=http://${HOST_BINDING}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/vaultwarden.webp
-      - traefik.enable=true
-      - traefik.http.routers.vaultwarden.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.vaultwarden.entrypoints=https
-      - traefik.http.routers.vaultwarden.tls=true
-      - traefik.http.routers.vaultwarden.tls.certresolver=hetzner
     ports:
       - '${HOST_BINDING:-127.0.0.1:8080}:80'
     networks:

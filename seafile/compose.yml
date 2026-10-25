@@ -41,16 +41,11 @@ services:
       SEAFILE_LOG_TO_STDOUT: false
       ENABLE_GO_FILESERVER: true
       ENABLE_SEADOC: true
-      # Reverse proxy needs two rules against seadoc:80: `/sdoc-server` with the
-      # prefix stripped, and `/socket.io` with the full path preserved (the editor
-      # connects to <origin>/socket.io, not under the prefix).
       SEADOC_SERVER_URL: https://${DOMAIN}/sdoc-server
       CACHE_PROVIDER: redis
       REDIS_HOST: redis
       REDIS_PORT: 6379
       ENABLE_NOTIFICATION_SERVER: true
-      # Reverse proxy: `/notification` -> notification:8083. The server answers on
-      # both / and /notification, so stripping or preserving the prefix both work.
       NOTIFICATION_SERVER_URL: https://${DOMAIN}/notification
       INNER_NOTIFICATION_SERVER_URL: http://notification:8083
     volumes:
@@ -92,6 +87,10 @@ services:
       - seadoc:/shared
     labels:
       - net.unraid.docker.managed=composeman
+      # Reverse proxy needs two rules against seadoc:80: `/sdoc-server` with the
+      # prefix stripped, and `/socket.io` with the full path preserved (the editor
+      # connects to <origin>/socket.io, not under the prefix).
+      - net.unraid.docker.webui=https://${DOMAIN}/sdoc-server
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
     ports:
       - '${SEADOC_HOST_BINDING:-127.0.0.1:8082}:80'
@@ -126,6 +125,9 @@ services:
       NOTIFICATION_SERVER_LOG_LEVEL: info
     labels:
       - net.unraid.docker.managed=composeman
+      # Reverse proxy: `/notification` -> notification:8083. The server answers on
+      # both / and /notification, so stripping or preserving the prefix both work.
+      - net.unraid.docker.webui=https://${DOMAIN}/notification
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/seafile.webp
     ports:
       - '${NOTIFICATION_HOST_BINDING:-127.0.0.1:8083}:8083'
@@ -173,7 +175,14 @@ services:
           memory: '1G'
           cpus: '1.0'
     healthcheck:
-      test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect', '--mariadbupgrade', '--innodb_initialized']
+      test:
+        [
+          'CMD',
+          '/usr/local/bin/healthcheck.sh',
+          '--connect',
+          '--mariadbupgrade',
+          '--innodb_initialized',
+        ]
       interval: 20s
       start_period: 30s
       timeout: 5s
