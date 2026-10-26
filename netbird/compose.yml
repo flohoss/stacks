@@ -26,6 +26,7 @@ services:
       - '--serverstransport.forwardingtimeouts.idleconntimeout=0s'
       - '--entrypoints.web.http.aliasHeadersStrategy=delete'
       - '--entrypoints.websecure.http.aliasHeadersStrategy=delete'
+      - '--entrypoints.apiint.http.aliasHeadersStrategy=delete'
       - '--experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin'
       - '--experimental.plugins.bouncer.version=v1.7.1'
       - '--providers.file.filename=/etc/traefik/dynamic.yaml'
@@ -34,6 +35,7 @@ services:
       - '80:80'
     volumes:
       - letsencrypt:/letsencrypt
+      - traefik-plugins:/plugins-storage
       - ./traefik-dynamic.yaml:/etc/traefik/dynamic.yaml:ro
     read_only: true
     tmpfs:
@@ -184,6 +186,7 @@ services:
 
 volumes:
   letsencrypt:
+  traefik-plugins:
   certs:
   crowdsec:
   crowdsec-config:
