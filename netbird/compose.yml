@@ -36,9 +36,6 @@ services:
       - '443:443'
       - '80:80'
       - '${HOST_BINDING:-127.0.0.1:8080}:8080'
-    depends_on:
-      crowdsec:
-        condition: service_healthy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt:/letsencrypt
