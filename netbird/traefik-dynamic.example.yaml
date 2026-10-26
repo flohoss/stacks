@@ -1,0 +1,147 @@
+# Example dynamic configuration for the Traefik instance in compose.yml.
+#
+# Copy this file to netbird/traefik-dynamic.yaml and replace the values marked
+# CHANGE_ME. compose.yml mounts it read-only at /etc/traefik/dynamic.yaml and
+# loads it through --providers.file.filename, so a restart is not needed.
+#
+# The static IPs below are the ones assigned in compose.yml:
+#   traefik    172.30.0.10
+#   dashboard  172.30.0.11
+#   server     172.30.0.12
+#   proxy      172.30.0.13
+#   crowdsec   172.30.0.14
+
+tcp:
+  routers:
+    # WireGuard/proxy traffic is TLS passthrough: Traefik never terminates it,
+    # the proxy service does. PROXY protocol v2 keeps the client IP intact.
+    proxy-passthrough:
+      entryPoints:
+        - websecure
+      rule: 'HostSNI(`*`)'
+      service: proxy-tls
+      # Lowest priority, so every http router above wins SNI-less matching
+      priority: 1
+      tls:
+        passthrough: true
+  services:
+    proxy-tls:
+      loadBalancer:
+        servers:
+          - address: '172.30.0.13:8443'
+        serversTransport: pp-v2
+  serversTransports:
+    pp-v2:
+      proxyProtocol:
+        version: 2
+
+tls:
+  options:
+    default:
+      sniStrict: true
+      minVersion: VersionTLS13
+      curvePreferences:
+        - X25519MLKEM768
+        - SecP256r1MLKEM768
+        - X25519
+        - CurveP256
+        - CurveP384
+
+http:
+  routers:
+    # Serves the Traefik API on the loopback-only apiint entrypoint. The
+    # compose healthcheck queries /api/http/routers/... through this router.
+    api-internal:
+      entryPoints:
+        - apiint
+      rule: 'PathPrefix(`/api`)'
+      service: api@internal
+
+    netbird-dashboard:
+      entryPoints:
+        - websecure
+      rule: 'Host(`CHANGE_ME.example.com`)'
+      service: netbird-dashboard
+      priority: 1
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - netbird-dashboard-crowdsec
+        - netbird-headers
+
+    # Management API and embedded IdP, served by netbird-server.
+    netbird-dashboard-api:
+      entryPoints:
+        - websecure
+      rule: 'Host(`CHANGE_ME.example.com`) && (PathPrefix(`/api`) || PathPrefix(`/oauth2`))'
+      service: netbird-server
+      priority: 110
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - netbird-dashboard-crowdsec
+        - netbird-headers
+
+    # gRPC needs an h2c backend, Traefik terminates TLS in front of it.
+    netbird-grpc:
+      entryPoints:
+        - websecure
+      rule: 'Host(`CHANGE_ME.example.com`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))'
+      service: netbird-server-h2c
+      priority: 100
+      tls:
+        certResolver: letsencrypt
+
+    # Relay and proxy WebSocket traffic, plain HTTP/1.1 backend.
+    netbird-backend:
+      entryPoints:
+        - websecure
+      rule: 'Host(`CHANGE_ME.example.com`) && (PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`))'
+      service: netbird-server
+      priority: 100
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    netbird-dashboard:
+      loadBalancer:
+        servers:
+          - url: 'http://172.30.0.11:80'
+
+    netbird-server:
+      loadBalancer:
+        servers:
+          - url: 'http://172.30.0.12:80'
+
+    netbird-server-h2c:
+      loadBalancer:
+        servers:
+          - url: 'h2c://172.30.0.12:80'
+
+  middlewares:
+    # AppSec traffic goes to the CrowdSec AppSec endpoint (7422), plain HTTP
+    # traffic and the LAPI to the LAPI endpoint (8080). The key must match
+    # CROWDSEC_DASHBOARD_BOUNCER_KEY in the compose environment.
+    netbird-dashboard-crowdsec:
+      plugin:
+        bouncer:
+          enabled: true
+          crowdsecMode: stream
+          crowdsecLapiScheme: http
+          crowdsecLapiHost: 172.30.0.14:8080
+          crowdsecLapiKey: CHANGE_ME_CROWDSEC_BOUNCER_KEY
+          crowdsecAppsecEnabled: true
+          crowdsecAppsecHost: 172.30.0.14:7422
+          crowdsecAppsecFailureBlock: true
+          crowdsecAppsecUnreachableBlock: true
+
+    netbird-headers:
+      headers:
+        frameDeny: true
+        contentTypeNosniff: true
+        referrerPolicy: no-referrer
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        customResponseHeaders:
+          X-Robots-Tag: 'noindex,nofollow'

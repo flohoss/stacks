@@ -24,7 +24,7 @@ The NetBird stack ([netbird/](netbird/)) is the exception: it runs its own Traef
 Stacks are published in one of two ways:
 
 - **Root Traefik** — [traefik/](traefik/) terminates TLS (Let's Encrypt via the Hetzner DNS challenge) and discovers stacks over the external `proxy` network. These stacks carry `traefik.*` router labels.
-- **NetBird reverse proxy** — [netbird/](netbird/) runs its own Traefik instance with router labels in the `netbird` network. Stacks without Traefik labels are published through the NetBird proxy service instead.
+- **NetBird reverse proxy** — [netbird/](netbird/) runs its own Traefik instance with router labels in the `netbird` network. Stacks without Traefik labels are published through the NetBird proxy service instead. Its routers live in a static file provider config: copy [netbird/traefik-dynamic.example.yaml](netbird/traefik-dynamic.example.yaml) to `netbird/traefik-dynamic.yaml` and fill in the domain and the CrowdSec bouncer key.
 
 Only services with Traefik router labels are discovered automatically by Traefik's Docker provider; every other service needs router labels or separate file-provider configuration to be proxied. Each stack's `compose.yml` shows which mode it uses: a `traefik.enable` label means the root Traefik handles it, while an unlabelled stack is routed by NetBird.
 

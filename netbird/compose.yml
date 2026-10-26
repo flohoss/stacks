@@ -7,13 +7,8 @@ services:
       netbird:
         ipv4_address: 172.30.0.10
     command:
-      - '--api.dashboard=true'
-      - '--api.insecure=true'
-      - '--log.level=INFO'
-      - '--accesslog=true'
-      - '--providers.docker=true'
-      - '--providers.docker.exposedbydefault=false'
-      - '--providers.docker.network=netbird'
+      - '--api=true'
+      - '--entrypoints.apiint.address=127.0.0.1:8081'
       - '--entrypoints.web.address=:80'
       - '--entrypoints.websecure.address=:443'
       - '--entrypoints.websecure.allowACMEByPass=true'
@@ -29,17 +24,26 @@ services:
       - '--serverstransport.forwardingtimeouts.idleconntimeout=0s'
       - '--entrypoints.web.http.aliasHeadersStrategy=delete'
       - '--entrypoints.websecure.http.aliasHeadersStrategy=delete'
+      - '--entrypoints.apiint.http.aliasHeadersStrategy=delete'
       - '--experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin'
       - '--experimental.plugins.bouncer.version=v1.7.1'
       - '--providers.file.filename=/etc/traefik/dynamic.yaml'
     ports:
       - '443:443'
       - '80:80'
-      - '${HOST_BINDING:-127.0.0.1:8080}:8080'
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt:/letsencrypt
       - ./traefik-dynamic.yaml:/etc/traefik/dynamic.yaml:ro
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard@file | grep -q netbird-dashboard-crowdsec && wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard-api@file | grep -q netbird-dashboard-crowdsec',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     logging:
       driver: 'json-file'
       options:
@@ -50,28 +54,11 @@ services:
     image: netbirdio/dashboard:v2.95.0@sha256:3d6adfee19dd8d34d795af51daee69d27d2081d2076a5a304cfdd14acc67d6f4
     container_name: netbird-dashboard
     restart: unless-stopped
-    networks: [netbird]
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.11
     env_file:
       - ./dashboard.env
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.netbird-dashboard.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.netbird-dashboard.entrypoints=websecure
-      - traefik.http.routers.netbird-dashboard.tls=true
-      - traefik.http.routers.netbird-dashboard.tls.certresolver=letsencrypt
-      - traefik.http.routers.netbird-dashboard.service=dashboard
-      - traefik.http.routers.netbird-dashboard.priority=1
-      - traefik.http.routers.netbird-dashboard.middlewares=netbird-dashboard-crowdsec@docker
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.enabled=true
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecMode=stream
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecLapiScheme=http
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecLapiHost=crowdsec:8080
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecLapiKey=${CROWDSEC_DASHBOARD_BOUNCER_KEY}
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecEnabled=true
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecHost=crowdsec:7422
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecFailureBlock=true
-      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecUnreachableBlock=true
-      - traefik.http.services.dashboard.loadbalancer.server.port=80
     logging:
       driver: 'json-file'
       options:
@@ -82,37 +69,15 @@ services:
     image: netbirdio/netbird-server:0.81.5@sha256:6799c37020ff70b9708d0e13bfe7b7a5004084caad86ba165ffe5ea1c84c0ea2
     container_name: netbird-server
     restart: unless-stopped
-    networks: [netbird]
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.12
     ports:
       - '3478:3478/udp'
     volumes:
       - ./data:/var/lib/netbird
       - ./config.yaml:/etc/netbird/config.yaml
     command: ['--config', '/etc/netbird/config.yaml']
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.netbird-grpc.rule=Host(`${DOMAIN}`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))
-      - traefik.http.routers.netbird-grpc.entrypoints=websecure
-      - traefik.http.routers.netbird-grpc.tls=true
-      - traefik.http.routers.netbird-grpc.tls.certresolver=letsencrypt
-      - traefik.http.routers.netbird-grpc.service=netbird-server-h2c
-      - traefik.http.routers.netbird-grpc.priority=100
-      - traefik.http.routers.netbird-backend.rule=Host(`${DOMAIN}`) && (PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`) || PathPrefix(`/api`) || PathPrefix(`/oauth2`))
-      - traefik.http.routers.netbird-backend.entrypoints=websecure
-      - traefik.http.routers.netbird-backend.tls=true
-      - traefik.http.routers.netbird-backend.tls.certresolver=letsencrypt
-      - traefik.http.routers.netbird-backend.service=netbird-server
-      - traefik.http.routers.netbird-backend.priority=100
-      - traefik.http.routers.netbird-dashboard-api.rule=Host(`${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/oauth2`))
-      - traefik.http.routers.netbird-dashboard-api.entrypoints=websecure
-      - traefik.http.routers.netbird-dashboard-api.tls=true
-      - traefik.http.routers.netbird-dashboard-api.tls.certresolver=letsencrypt
-      - traefik.http.routers.netbird-dashboard-api.service=netbird-server
-      - traefik.http.routers.netbird-dashboard-api.middlewares=netbird-dashboard-crowdsec@docker
-      - traefik.http.routers.netbird-dashboard-api.priority=110
-      - traefik.http.services.netbird-server.loadbalancer.server.port=80
-      - traefik.http.services.netbird-server-h2c.loadbalancer.server.port=80
-      - traefik.http.services.netbird-server-h2c.loadbalancer.server.scheme=h2c
     logging:
       driver: 'json-file'
       options:
@@ -125,7 +90,9 @@ services:
     ports:
       - 51820:51820/udp
     restart: unless-stopped
-    networks: [netbird]
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.13
     depends_on:
       netbird-server:
         condition: service_started
@@ -135,15 +102,6 @@ services:
       - ./proxy.env
     volumes:
       - certs:/certs
-    labels:
-      - traefik.enable=true
-      - traefik.tcp.routers.proxy-passthrough.entrypoints=websecure
-      - traefik.tcp.routers.proxy-passthrough.rule=HostSNI(`*`)
-      - traefik.tcp.routers.proxy-passthrough.tls.passthrough=true
-      - traefik.tcp.routers.proxy-passthrough.service=proxy-tls
-      - traefik.tcp.routers.proxy-passthrough.priority=1
-      - traefik.tcp.services.proxy-tls.loadbalancer.server.port=8443
-      - traefik.tcp.services.proxy-tls.loadbalancer.serverstransport=pp-v2@file
     logging:
       driver: 'json-file'
       options:
@@ -154,7 +112,9 @@ services:
     image: crowdsecurity/crowdsec:v1.8.1@sha256:0f2523fa61ef507f15d953045cface490cc880670c62f2755ced17524107f71a
     container_name: netbird-crowdsec
     restart: unless-stopped
-    networks: [netbird]
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.14
     environment:
       COLLECTIONS: crowdsecurity/linux crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
       BOUNCER_KEY_netbird_dashboard: ${CROWDSEC_DASHBOARD_BOUNCER_KEY}
@@ -167,8 +127,6 @@ services:
       timeout: 5s
       retries: 15
       start_period: 30s
-    labels:
-      - traefik.enable=false
     logging:
       driver: 'json-file'
       options:
