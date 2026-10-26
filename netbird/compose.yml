@@ -35,24 +35,13 @@ services:
       - '80:80'
     volumes:
       - letsencrypt:/letsencrypt
-      - traefik-plugins:/plugins-storage
       - ./traefik-dynamic.yaml:/etc/traefik/dynamic.yaml:ro
-    read_only: true
-    tmpfs:
-      - /tmp
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-    pids_limit: 200
-    ulimits:
-      nofile:
-        soft: 8192
-        hard: 16384
     healthcheck:
-      test: ['CMD-SHELL', "wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard@file | grep -q netbird-dashboard-crowdsec && wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard-api@file | grep -q netbird-dashboard-crowdsec"]
+      test:
+        [
+          'CMD-SHELL',
+          'wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard@file | grep -q netbird-dashboard-crowdsec && wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard-api@file | grep -q netbird-dashboard-crowdsec',
+        ]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -72,16 +61,6 @@ services:
         ipv4_address: 172.30.0.11
     env_file:
       - ./dashboard.env
-    tmpfs:
-      - /tmp
-      - /var/lib/nginx/tmp
-      - /var/lib/nginx/logs
-      - /run
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    pids_limit: 100
     logging:
       driver: 'json-file'
       options:
@@ -99,16 +78,8 @@ services:
       - '3478:3478/udp'
     volumes:
       - ./data:/var/lib/netbird
-      - ./config.yaml:/etc/netbird/config.yaml:ro
+      - ./config.yaml:/etc/netbird/config.yaml
     command: ['--config', '/etc/netbird/config.yaml']
-    read_only: true
-    tmpfs:
-      - /tmp
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    pids_limit: 200
     logging:
       driver: 'json-file'
       options:
@@ -133,17 +104,6 @@ services:
       - ./proxy.env
     volumes:
       - certs:/certs
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /run
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-    pids_limit: 200
     logging:
       driver: 'json-file'
       options:
@@ -163,16 +123,6 @@ services:
     volumes:
       - ./crowdsec/acquis.d/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
       - crowdsec:/var/lib/crowdsec/data
-      - crowdsec-config:/etc/crowdsec
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /var/run
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    pids_limit: 200
     healthcheck:
       test: ['CMD-SHELL', "cscli lapi status >/dev/null 2>&1 && bash -c '</dev/tcp/127.0.0.1/7422'"]
       interval: 10s
@@ -187,10 +137,8 @@ services:
 
 volumes:
   letsencrypt:
-  traefik-plugins:
   certs:
   crowdsec:
-  crowdsec-config:
 
 networks:
   netbird:
