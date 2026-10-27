@@ -163,7 +163,7 @@ services:
       - net
 
   db:
-    image: mariadb:10.11.19@sha256:be23f119c5a7fa9f8a1142efc172d58de3680e7411f383a86f625ad6508af2b1
+    image: mariadb:10.11.19@sha256:d769e37960821dfdcf096954f6e7ac89f747e116c1bba98e48edd265dfc7deae
     restart: always
     logging:
       options:
