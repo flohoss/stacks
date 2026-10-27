@@ -20,7 +20,7 @@ services:
       - snapotter:/data
     labels:
       - net.unraid.docker.managed=composeman
-      - net.unraid.docker.webui=http://${HOST_BINDING}
+      - net.unraid.docker.webui=http://${HOST_BINDING:-localehost:1349}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/snapotter.webp
     ports:
       - '${HOST_BINDING:-127.0.0.1:1349}:1349'
