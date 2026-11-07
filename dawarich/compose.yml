@@ -1,0 +1,144 @@
+services:
+  dawarich:
+    image: freikin/dawarich:1.21.0@sha256:aae6cabd95c1dd5e5d4e2c920692a1b11524feec143d295a9bcc914df7ffdcdf
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          memory: '4G'
+          cpus: '2.0'
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    entrypoint: web-entrypoint.sh
+    command: ['bin/rails', 'server', '-p', '3000', '-b', '::']
+    stop_grace_period: 60s
+    environment:
+      TZ: Europe/Berlin
+      TIME_ZONE: Europe/Berlin
+      RAILS_ENV: production
+      SELF_HOSTED: true
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      DOMAIN: ${DOMAIN}
+      APPLICATION_URL: https://${DOMAIN}
+      APPLICATION_HOSTS: ${DOMAIN},127.0.0.1,localhost
+      APPLICATION_PROTOCOL: https
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: db
+      DATABASE_USERNAME: user
+      DATABASE_PASSWORD: password
+      REDIS_URL: redis://redis:6379
+      STORE_GEODATA: true
+      # Background jobs run inside the web process, which requires a single web worker
+      SIDEKIQ_EMBEDDED: 'true'
+      WEB_CONCURRENCY: '0'
+      BACKGROUND_PROCESSING_CONCURRENCY: '2'
+      RAILS_LOG_TO_STDOUT: true
+      SMTP_SERVER: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM_EMAIL:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_ISSUER: ${OIDC_PROVIDER_METADATA_URL:-}
+      OIDC_PKCE_ENABLED: ${OIDC_PKCE_ENABLED:-false}
+    volumes:
+      - ${DIRECTORY}/public:/var/app/public
+      - ${DIRECTORY}/storage:/var/app/storage
+      - ${DIRECTORY}/watched:/var/app/tmp/imports/watched
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/dawarich.webp
+    ports:
+      - '${HOST_BINDING:-127.0.0.1:3000}:3000'
+    networks:
+      - net
+
+  db:
+    image: postgis/postgis:17-3.5-alpine@sha256:894f570c0cf0664ed5576a8fd5d5bfb8fb1b19d592885b686c3a88c8bd90c41f
+    restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    deploy:
+      resources:
+        limits:
+          memory: '2G'
+          cpus: '2.0'
+    shm_size: 1G
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db:/var/lib/postgresql/data
+    labels:
+      - backup.target=${BACKUP_TARGET:-dawarich}
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/postgresql.webp
+    expose:
+      - 5432
+    networks:
+      - net
+
+  redis:
+    image: redis:8.10.3@sha256:1f88291b4c57bdf249f02eb085a8669889b2d2954e91d4de5118a5da6b78dd53
+    restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    deploy:
+      resources:
+        limits:
+          memory: '256M'
+          cpus: '0.5'
+    command: redis-server --save 900 1 --save 300 10 --appendonly no
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping || exit 1']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - redis:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp
+    expose:
+      - 6379
+    networks:
+      - net
+
+networks:
+  net:
+    external: false
+
+volumes:
+  db: {}
+  redis: {}
