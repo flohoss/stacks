@@ -55,12 +55,6 @@ services:
       - ${DIRECTORY}/public:/var/app/public
       - ${DIRECTORY}/storage:/var/app/storage
       - ${DIRECTORY}/watched:/var/app/tmp/imports/watched
-    healthcheck:
-      test: ['CMD-SHELL', "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'"]
-      interval: 10s
-      timeout: 10s
-      retries: 30
-      start_period: 30s
     labels:
       - net.unraid.docker.managed=composeman
       - net.unraid.docker.webui=https://${DOMAIN}
