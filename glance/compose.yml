@@ -15,5 +15,9 @@ services:
     user: '1000:1000'
     volumes:
       - ${DIRECTORY}:/app/config:ro
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=http://${HOST_BINDING:-localhost:8080}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/glance.webp
     ports:
       - '${HOST_BINDING:-127.0.0.1:8080}:8080'
