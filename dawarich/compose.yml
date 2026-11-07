@@ -2,15 +2,17 @@ services:
   dawarich:
     image: freikin/dawarich:1.21.0@sha256:aae6cabd95c1dd5e5d4e2c920692a1b11524feec143d295a9bcc914df7ffdcdf
     restart: always
-    logging:
-      options:
-        max-size: 10m
-        max-file: '3'
     deploy:
       resources:
         limits:
           memory: '4G'
           cpus: '2.0'
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    extra_hosts:
+      - ${EXTRA_HOSTS:-localhost:127.0.0.1}
     depends_on:
       db:
         condition: service_healthy
