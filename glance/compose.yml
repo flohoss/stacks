@@ -11,7 +11,9 @@ services:
         limits:
           memory: '1G'
           cpus: '1.0'
+    read_only: true
+    user: '1000:1000'
     volumes:
-      - ${DIRECTORY}:/app/config
+      - ${DIRECTORY}:/app/config:ro
     ports:
       - '${HOST_BINDING:-127.0.0.1:8080}:8080'
