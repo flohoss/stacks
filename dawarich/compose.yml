@@ -11,8 +11,6 @@ services:
       options:
         max-size: 10m
         max-file: '3'
-    extra_hosts:
-      - ${EXTRA_HOSTS:-localhost:127.0.0.1}
     depends_on:
       db:
         condition: service_healthy
@@ -50,9 +48,9 @@ services:
       SMTP_FROM: ${SMTP_FROM_EMAIL:-}
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
-      OIDC_ISSUER: ${OIDC_PROVIDER_METADATA_URL:-}
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
       OIDC_REDIRECT_URI: https://${DOMAIN}/users/auth/openid_connect/callback
-      OIDC_PKCE_ENABLED: ${OIDC_PKCE_ENABLED:-true}
+      OIDC_PKCE_ENABLED: true
     volumes:
       - ${DIRECTORY}/public:/var/app/public
       - ${DIRECTORY}/storage:/var/app/storage
