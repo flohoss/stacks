@@ -49,17 +49,14 @@ services:
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
       OIDC_ISSUER: ${OIDC_PROVIDER_METADATA_URL:-}
-      OIDC_PKCE_ENABLED: ${OIDC_PKCE_ENABLED:-false}
+      OIDC_REDIRECT_URI: https://${DOMAIN}/users/auth/openid_connect/callback
+      OIDC_PKCE_ENABLED: ${OIDC_PKCE_ENABLED:-true}
     volumes:
       - ${DIRECTORY}/public:/var/app/public
       - ${DIRECTORY}/storage:/var/app/storage
       - ${DIRECTORY}/watched:/var/app/tmp/imports/watched
     healthcheck:
-      test:
-        [
-          'CMD-SHELL',
-          "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'",
-        ]
+      test: ['CMD-SHELL', "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'"]
       interval: 10s
       timeout: 10s
       retries: 30
