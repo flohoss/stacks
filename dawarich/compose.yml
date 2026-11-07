@@ -51,6 +51,7 @@ services:
       OIDC_ISSUER: ${OIDC_ISSUER:-}
       OIDC_REDIRECT_URI: https://${DOMAIN}/users/auth/openid_connect/callback
       OIDC_PKCE_ENABLED: true
+      ALLOW_EMAIL_PASSWORD_LOGIN: ${ALLOW_EMAIL_PASSWORD_LOGIN:-true}
     volumes:
       - ${DIRECTORY}/public:/var/app/public
       - ${DIRECTORY}/storage:/var/app/storage
