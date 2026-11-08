@@ -13,8 +13,11 @@ services:
           cpus: '1.0'
     read_only: true
     user: '1000:1000'
+    environment:
+      - TZ=${TZ:-Europe/Berlin}
     volumes:
       - ${DIRECTORY}:/app/config:ro
+      - /usr/share/zoneinfo:/usr/share/zoneinfo:ro
     labels:
       - net.unraid.docker.managed=composeman
       - net.unraid.docker.webui=http://${HOST_BINDING:-localhost:8080}
