@@ -1,0 +1,30 @@
+services:
+  dozzle:
+    image: amir20/dozzle:v11.4.2@sha256:08cd5230e21e364241f3dcf26191f293166f7835654eb7e41168b9c685f0947b
+    restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    deploy:
+      resources:
+        limits:
+          memory: '256M'
+          cpus: '0.5'
+    environment:
+      TZ: Europe/Berlin
+      # Point at the read-only socket proxy running on each monitored host.
+      # Format: tcp://host:2375|display-name,tcp://host2:2375|name2
+      DOZZLE_REMOTE_HOST: ${DOZZLE_REMOTE_HOST}
+      DOZZLE_AUTH_PROVIDER: simple
+      DOZZLE_AUTH_OIDC_ISSUER: ${OIDC_ISSUER}
+      DOZZLE_AUTH_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      DOZZLE_AUTH_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+    volumes:
+      - ${DIRECTORY}:/data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=http://${HOST_BINDING:-localhost:8080}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/dozzle.webp
+    ports:
+      - '${HOST_BINDING:-127.0.0.1:8080}:8080'
