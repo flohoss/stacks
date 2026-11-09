@@ -33,3 +33,9 @@ services:
       - traefik.http.routers.dozzle.tls.certresolver=hetzner
     ports:
       - '${HOST_BINDING:-127.0.0.1:8080}:8080'
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
