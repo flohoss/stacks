@@ -26,5 +26,10 @@ services:
       - net.unraid.docker.managed=composeman
       - net.unraid.docker.webui=http://${HOST_BINDING:-localhost:8080}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/dozzle.webp
+      - traefik.enable=true
+      - traefik.http.routers.dozzle.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.dozzle.entrypoints=https
+      - traefik.http.routers.dozzle.tls=true
+      - traefik.http.routers.dozzle.tls.certresolver=hetzner
     ports:
       - '${HOST_BINDING:-127.0.0.1:8080}:8080'
