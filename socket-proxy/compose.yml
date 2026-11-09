@@ -11,6 +11,11 @@ services:
         limits:
           memory: '128M'
           cpus: '0.25'
+    user: '99:0'
+    read_only: true
+    tmpfs:
+      - /run:rw,mode=1777
+      - /tmp
     environment:
       CONTAINERS: 1
       INFO: 1
