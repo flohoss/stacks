@@ -16,7 +16,7 @@ services:
       # Point at the read-only socket proxy running on each monitored host.
       # Format: tcp://host:2375|display-name,tcp://host2:2375|name2
       DOZZLE_REMOTE_HOST: ${DOZZLE_REMOTE_HOST}
-      DOZZLE_AUTH_PROVIDER: simple
+      DOZZLE_AUTH_PROVIDER: oidc
       DOZZLE_AUTH_OIDC_ISSUER: ${OIDC_ISSUER}
       DOZZLE_AUTH_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
       DOZZLE_AUTH_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
