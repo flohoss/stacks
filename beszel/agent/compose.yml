@@ -1,0 +1,34 @@
+services:
+  beszel-agent:
+    image: henrygd/beszel-agent:0.21.1@sha256:cb6868012964d7a68debaa2c84bb72285e5f08531e81f506bd4c493bf052e41c
+    restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    deploy:
+      resources:
+        limits:
+          memory: '256M'
+          cpus: '0.5'
+    read_only: true
+    cap_drop:
+      - 'ALL'
+    security_opt:
+      - no-new-privileges:true
+    network_mode: host
+    environment:
+      LISTEN: '${HOST_BINDING:-127.0.0.1:45876}'
+      KEY: ${KEY}
+      TOKEN: ${TOKEN}
+      HUB_URL: ${HUB_URL}
+      DISCONNECT_RETRY_INTERVAL: 15s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - agentdata:/var/lib/beszel-agent
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/beszel.webp
+
+volumes:
+  agentdata: {}
