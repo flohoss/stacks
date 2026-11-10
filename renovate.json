@@ -28,21 +28,14 @@
       "allowedVersions": "10.x"
     },
     {
-      "matchManagers": ["custom.regex"],
-      "matchFileNames": ["netbird/**"],
-      "matchDepNames": ["maxlerebourg/crowdsec-bouncer-traefik-plugin"],
-      "enabled": false
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchFileNames": ["netbird/**"],
-      "matchDepNames": ["traefik", "crowdsecurity/crowdsec"],
-      "enabled": false
-    },
-    {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["netbirdio/dashboard", "netbirdio/netbird-server", "netbirdio/reverse-proxy"],
       "groupName": "NetBird"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["henrygd/beszel", "henrygd/beszel-agent"],
+      "groupName": "Beszel"
     },
     {
       "matchDatasources": ["docker"],
