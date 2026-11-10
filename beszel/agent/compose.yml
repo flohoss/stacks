@@ -2,15 +2,17 @@ services:
   beszel-agent:
     image: henrygd/beszel-agent:0.21.1@sha256:cb6868012964d7a68debaa2c84bb72285e5f08531e81f506bd4c493bf052e41c
     restart: always
-    logging:
-      options:
-        max-size: 5m
-        max-file: '2'
     deploy:
       resources:
         limits:
           memory: '256M'
           cpus: '0.5'
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    extra_hosts:
+      - ${EXTRA_HOSTS:-localhost:127.0.0.1}
     read_only: true
     cap_drop:
       - 'ALL'
