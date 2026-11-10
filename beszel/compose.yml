@@ -1,0 +1,42 @@
+services:
+  beszel:
+    image: henrygd/beszel:0.21.1@sha256:8514a69d9bbbcb74f371a3205561ee231fc0289739cea64e8131f341d695b770
+    restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    deploy:
+      resources:
+        limits:
+          memory: '512M'
+          cpus: '0.5'
+    environment:
+      DISABLE_SSH: 'true'
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - 'ALL'
+    volumes:
+      - data:/beszel_data
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.webui=https://${DOMAIN}
+      - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/beszel.webp
+      - traefik.enable=true
+      - traefik.http.routers.beszel.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.beszel.entrypoints=https
+      - traefik.http.routers.beszel.tls=true
+      - traefik.http.routers.beszel.tls.certresolver=hetzner
+    ports:
+      - '${HOST_BINDING:-127.0.0.1:8090}:8090'
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  data: {}
