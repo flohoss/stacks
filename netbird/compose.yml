@@ -26,7 +26,7 @@ services:
       - '--entrypoints.websecure.http.aliasHeadersStrategy=delete'
       - '--entrypoints.apiint.http.aliasHeadersStrategy=delete'
       - '--experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin'
-      - '--experimental.plugins.bouncer.version=v1.7.1'
+      - '--experimental.plugins.bouncer.version=v1.8.1'
       - '--providers.file.filename=/etc/traefik/dynamic.yaml'
     ports:
       - '443:443'
