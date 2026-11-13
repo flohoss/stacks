@@ -72,6 +72,8 @@ services:
     networks:
       netbird:
         ipv4_address: 172.30.0.12
+    env_file:
+      - ./server.env
     ports:
       - '3478:3478/udp'
     volumes:
