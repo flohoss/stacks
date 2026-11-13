@@ -66,7 +66,7 @@ services:
         max-file: '2'
 
   netbird-server:
-    image: netbirdio/netbird-server:0.83.0@sha256:c353ffadb8a12de0c453ed5d3d074f15e7003b6231346fcfd86f206dd02bd5be
+    image: netbirdio/netbird-server:0.83.1@sha256:f6acc1a6dcb48d10b867ec7e6916c62ef5c8dc2bb198aec9cc637b2dd26c06c9
     container_name: netbird-server
     restart: unless-stopped
     networks:
@@ -87,7 +87,7 @@ services:
         max-file: '2'
 
   proxy:
-    image: netbirdio/reverse-proxy:0.83.0@sha256:23b072ab2b7f432c9187a916188ff254b299b24fcce85a11cbbc15c6d464ccf5
+    image: netbirdio/reverse-proxy:0.83.1@sha256:7c8e11d39dfd88bd9f5a9e281b802b7e5772dc11869f53be81685283800816c5
     container_name: netbird-proxy
     ports:
       - 51820:51820/udp
