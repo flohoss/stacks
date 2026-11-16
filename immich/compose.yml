@@ -89,7 +89,7 @@ services:
       - net
 
   db:
-    image: ghcr.io/immich-app/postgres:14-vectorchord1.1.1@sha256:f2ae0550db9760d83827a5720e402177509de76d6f759f0ae353da55902dfb54
+    image: ghcr.io/immich-app/postgres:14-vectorchord1.1.1@sha256:beb5368452aaff022cc4a7d724c35e04810e6548a5b4841a3e1372f7913c9863
     restart: always
     logging:
       options:
