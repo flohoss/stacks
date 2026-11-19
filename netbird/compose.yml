@@ -6,9 +6,16 @@ services:
     networks:
       netbird:
         ipv4_address: 172.30.0.10
+    depends_on:
+      crowdsec:
+        condition: service_healthy
     command:
       - '--api=true'
       - '--entrypoints.apiint.address=127.0.0.1:8081'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--providers.docker.network=netbird'
+      - '--providers.file.filename=/etc/traefik/dynamic.yaml'
       - '--entrypoints.web.address=:80'
       - '--entrypoints.websecure.address=:443'
       - '--entrypoints.websecure.allowACMEByPass=true'
@@ -27,18 +34,29 @@ services:
       - '--entrypoints.apiint.http.aliasHeadersStrategy=delete'
       - '--experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin'
       - '--experimental.plugins.bouncer.version=v1.8.2'
-      - '--providers.file.filename=/etc/traefik/dynamic.yaml'
     ports:
       - '443:443'
       - '80:80'
     volumes:
       - letsencrypt:/letsencrypt
-      - ./traefik-dynamic.yaml:/etc/traefik/dynamic.yaml:ro
+      - ${DIRECTORY}/traefik.yaml:/etc/traefik/dynamic.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.enabled=true
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecMode=stream
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecLapiScheme=http
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecLapiHost=crowdsec:8080
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecLapiKey=${CROWDSEC_DASHBOARD_BOUNCER_KEY}
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecEnabled=true
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecHost=crowdsec:7422
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecFailureBlock=true
+      - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecUnreachableBlock=true
     healthcheck:
       test:
         [
           'CMD-SHELL',
-          'wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard@file | grep -q netbird-dashboard-crowdsec && wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard-api@file | grep -q netbird-dashboard-crowdsec',
+          'wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard@docker | grep -q netbird-dashboard-crowdsec && wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard-api@docker | grep -q netbird-dashboard-crowdsec',
         ]
       interval: 30s
       timeout: 5s
@@ -57,8 +75,29 @@ services:
     networks:
       netbird:
         ipv4_address: 172.30.0.11
-    env_file:
-      - ./dashboard.env
+    environment:
+      NETBIRD_MGMT_API_ENDPOINT: https://${DOMAIN}
+      NETBIRD_MGMT_GRPC_API_ENDPOINT: https://${DOMAIN}
+      AUTH_AUDIENCE: netbird-dashboard
+      AUTH_CLIENT_ID: netbird-dashboard
+      AUTH_CLIENT_SECRET: ''
+      AUTH_AUTHORITY: https://${DOMAIN}/oauth2
+      USE_AUTH0: false
+      AUTH_SUPPORTED_SCOPES: openid profile email groups
+      AUTH_REDIRECT_URI: /nb-auth
+      AUTH_SILENT_REDIRECT_URI: /nb-silent-auth
+      NGINX_SSL_PORT: '443'
+      LETSENCRYPT_DOMAIN: none
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.netbird-dashboard.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.netbird-dashboard.entrypoints=websecure
+      - traefik.http.routers.netbird-dashboard.tls=true
+      - traefik.http.routers.netbird-dashboard.tls.certresolver=letsencrypt
+      - traefik.http.routers.netbird-dashboard.service=dashboard
+      - traefik.http.routers.netbird-dashboard.middlewares=netbird-dashboard-crowdsec@docker,netbird-headers@file
+      - traefik.http.routers.netbird-dashboard.priority=1
+      - traefik.http.services.dashboard.loadbalancer.server.port=80
     logging:
       driver: 'json-file'
       options:
@@ -72,14 +111,39 @@ services:
     networks:
       netbird:
         ipv4_address: 172.30.0.12
-    env_file:
-      - ./server.env
+    environment:
+      NB_AUTH_SECRET: ${NB_AUTH_SECRET}
+      NB_STORE_ENCRYPTION_KEY: ${NB_STORE_ENCRYPTION_KEY}
     ports:
       - '3478:3478/udp'
     volumes:
-      - ./data:/var/lib/netbird
-      - ./config.yaml:/etc/netbird/config.yaml
+      - ${DIRECTORY}/data:/var/lib/netbird
+      - ${DIRECTORY}/config.yaml:/etc/netbird/config.yaml
     command: ['--config', '/etc/netbird/config.yaml']
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.netbird-grpc.rule=Host(`${DOMAIN}`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))
+      - traefik.http.routers.netbird-grpc.entrypoints=websecure
+      - traefik.http.routers.netbird-grpc.tls=true
+      - traefik.http.routers.netbird-grpc.tls.certresolver=letsencrypt
+      - traefik.http.routers.netbird-grpc.service=netbird-server-h2c
+      - traefik.http.routers.netbird-grpc.priority=100
+      - traefik.http.routers.netbird-backend.rule=Host(`${DOMAIN}`) && (PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`))
+      - traefik.http.routers.netbird-backend.entrypoints=websecure
+      - traefik.http.routers.netbird-backend.tls=true
+      - traefik.http.routers.netbird-backend.tls.certresolver=letsencrypt
+      - traefik.http.routers.netbird-backend.service=netbird-server
+      - traefik.http.routers.netbird-backend.priority=100
+      - traefik.http.routers.netbird-dashboard-api.rule=Host(`${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/oauth2`))
+      - traefik.http.routers.netbird-dashboard-api.entrypoints=websecure
+      - traefik.http.routers.netbird-dashboard-api.tls=true
+      - traefik.http.routers.netbird-dashboard-api.tls.certresolver=letsencrypt
+      - traefik.http.routers.netbird-dashboard-api.service=netbird-server
+      - traefik.http.routers.netbird-dashboard-api.middlewares=netbird-dashboard-crowdsec@docker,netbird-headers@file
+      - traefik.http.routers.netbird-dashboard-api.priority=110
+      - traefik.http.services.netbird-server.loadbalancer.server.port=80
+      - traefik.http.services.netbird-server-h2c.loadbalancer.server.port=80
+      - traefik.http.services.netbird-server-h2c.loadbalancer.server.scheme=h2c
     logging:
       driver: 'json-file'
       options:
@@ -100,10 +164,32 @@ services:
         condition: service_started
       crowdsec:
         condition: service_healthy
-    env_file:
-      - ./proxy.env
+    environment:
+      NB_PROXY_DEBUG_LOGS: false
+      NB_PROXY_MANAGEMENT_ADDRESS: http://netbird-server:80
+      NB_PROXY_ALLOW_INSECURE: true
+      NB_PROXY_DOMAIN: ${DOMAIN}
+      NB_PROXY_ADDRESS: ':8443'
+      NB_PROXY_TOKEN: ${NB_PROXY_TOKEN}
+      NB_PROXY_CERTIFICATE_DIRECTORY: /certs
+      NB_PROXY_ACME_CERTIFICATES: true
+      NB_PROXY_ACME_CHALLENGE_TYPE: tls-alpn-01
+      NB_PROXY_FORWARDED_PROTO: https
+      NB_PROXY_PROXY_PROTOCOL: true
+      NB_PROXY_TRUSTED_PROXIES: 172.30.0.10
+      NB_PROXY_CROWDSEC_API_URL: http://crowdsec:8080
+      NB_PROXY_CROWDSEC_API_KEY: ${NB_PROXY_CROWDSEC_API_KEY}
     volumes:
       - certs:/certs
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.proxy-passthrough.entrypoints=websecure
+      - traefik.tcp.routers.proxy-passthrough.rule=HostSNI(`*`)
+      - traefik.tcp.routers.proxy-passthrough.tls.passthrough=true
+      - traefik.tcp.routers.proxy-passthrough.service=proxy-tls
+      - traefik.tcp.routers.proxy-passthrough.priority=1
+      - traefik.tcp.services.proxy-tls.loadbalancer.server.port=8443
+      - traefik.tcp.services.proxy-tls.loadbalancer.serverstransport=pp-v2@file
     logging:
       driver: 'json-file'
       options:
@@ -121,7 +207,7 @@ services:
       COLLECTIONS: crowdsecurity/linux crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
       BOUNCER_KEY_netbird_dashboard: ${CROWDSEC_DASHBOARD_BOUNCER_KEY}
     volumes:
-      - ./crowdsec/acquis.d/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
+      - ${DIRECTORY}/crowdsec/acquis.d/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
       - crowdsec:/var/lib/crowdsec/data
     healthcheck:
       test: ['CMD-SHELL', "cscli lapi status >/dev/null 2>&1 && bash -c '</dev/tcp/127.0.0.1/7422'"]
