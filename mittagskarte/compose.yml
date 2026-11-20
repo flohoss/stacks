@@ -1,6 +1,6 @@
 services:
   mittagskarte:
-    image: ghcr.io/flohoss/mittagskarte:v2.4.3@sha256:2c2af4f8a67ef904a7ef62eaf2306eba69299e0f5b80e018ae6d2f6c6783979b
+    image: ghcr.io/flohoss/mittagskarte:v2.4.3@sha256:2f022b9bb3a9f6d42f58b7b875b2ed4e5418d7c8dacefaec6920a3c7d79f73d3
     restart: always
     logging:
       options:
@@ -24,7 +24,6 @@ services:
       SNAPOTTER_URL: ${SNAPOTTER_URL}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_SECRET: ${TELEGRAM_SECRET}
-      TELEGRAM_WEBHOOK_URL: https://${DOMAIN}/api/telegram/${TELEGRAM_SECRET}
     volumes:
       - ${DIRECTORY}:/app/data
     labels:
