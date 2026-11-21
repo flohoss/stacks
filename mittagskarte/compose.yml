@@ -1,6 +1,6 @@
 services:
   mittagskarte:
-    image: ghcr.io/flohoss/mittagskarte:v2.4.3@sha256:2f022b9bb3a9f6d42f58b7b875b2ed4e5418d7c8dacefaec6920a3c7d79f73d3
+    image: ghcr.io/flohoss/mittagskarte:v2.4.4@sha256:1297e682c08551cb6bf6bcbbd462fe12ffbe56ab10693c8500a5bb2b83d26c8c
     restart: always
     logging:
       options:
