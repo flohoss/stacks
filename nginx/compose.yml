@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx/nginx-unprivileged:1.31.9@sha256:0255fc1dcc1d7b358aac20166543e52029fea577413edadb0912f5b928c7e312
+    image: nginx/nginx-unprivileged:1.31.9@sha256:4ac6145e433b1adc0880714fe3402680f5e599f1a264148253d6a94a4c000776
     restart: always
     logging:
       options:
