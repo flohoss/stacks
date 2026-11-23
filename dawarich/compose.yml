@@ -1,4 +1,30 @@
 services:
+  photon:
+    image: rtuszik/photon-docker:2.5.0@sha256:c5babeb0ac396b485822036cf3c69e54fb6c79d699328a4e042e11bbd6f73f1a
+    restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    deploy:
+      resources:
+        limits:
+          memory: '4G'
+          cpus: '2.0'
+    stop_grace_period: 60s
+    environment:
+      REGION: europe
+      UPDATE_STRATEGY: SEQUENTIAL
+      UPDATE_INTERVAL: 720h
+      JAVA_PARAMS: -Xmx3g
+      APPRISE_URLS: ${APPRISE_URLS:-}
+    volumes:
+      - photon:/photon/data
+    expose:
+      - 2322
+    networks:
+      - net
+
   dawarich:
     image: freikin/dawarich:1.23.0@sha256:c9c6a9c04fa2ad11c438fc0b0ea3b7d95fc7e6d8c7a3cfa98bf1fc5aef2dbfd4
     restart: always
@@ -58,9 +84,9 @@ services:
       OTP_ENCRYPTION_PRIMARY_KEY: ${OTP_ENCRYPTION_PRIMARY_KEY:-}
       OTP_ENCRYPTION_DETERMINISTIC_KEY: ${OTP_ENCRYPTION_DETERMINISTIC_KEY:-}
       OTP_ENCRYPTION_KEY_DERIVATION_SALT: ${OTP_ENCRYPTION_KEY_DERIVATION_SALT:-}
-      PHOTON_API_HOST: ${PHOTON_API_HOST:-app.chibigeo.com/v1/photon}
+      PHOTON_API_HOST: ${PHOTON_API_HOST:-photon:2322}
       PHOTON_API_KEY: ${PHOTON_API_KEY:-}
-      PHOTON_API_USE_HTTPS: ${PHOTON_API_USE_HTTPS:-true}
+      PHOTON_API_USE_HTTPS: ${PHOTON_API_USE_HTTPS:-false}
     volumes:
       - ${DIRECTORY}/public:/var/app/public
       - ${DIRECTORY}/storage:/var/app/storage
@@ -143,3 +169,4 @@ networks:
 volumes:
   db: {}
   redis: {}
+  photon: {}
