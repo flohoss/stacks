@@ -60,7 +60,7 @@ services:
       - net
 
   seadoc:
-    image: seafileltd/sdoc-server:3.0.9@sha256:de06c248397dfc1bbc616210a2ceab1c7ea23c9442d38dfd3875be77e87d4bc9
+    image: seafileltd/sdoc-server:3.0.10@sha256:35f52045a5c791d480ba910f899fd070403c66d01974cdc665519c0c1632316b
     restart: always
     logging:
       options:
