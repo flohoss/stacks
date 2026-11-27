@@ -69,14 +69,14 @@ services:
       options:
         max-size: 10m
         max-file: '3'
-    depends_on:
-      matrix:
-        condition: service_healthy
     deploy:
       resources:
         limits:
           memory: '256M'
           cpus: '0.25'
+    depends_on:
+      matrix:
+        condition: service_healthy
     volumes:
       - ${DIRECTORY}/signal:/data
     labels:
@@ -92,14 +92,14 @@ services:
       options:
         max-size: 10m
         max-file: '3'
-    depends_on:
-      matrix:
-        condition: service_healthy
     deploy:
       resources:
         limits:
           memory: '256M'
           cpus: '0.25'
+    depends_on:
+      matrix:
+        condition: service_healthy
     volumes:
       - ${DIRECTORY}/telegram:/data
     labels:
@@ -115,14 +115,14 @@ services:
       options:
         max-size: 10m
         max-file: '3'
-    depends_on:
-      matrix:
-        condition: service_healthy
     deploy:
       resources:
         limits:
           memory: '256M'
           cpus: '0.25'
+    depends_on:
+      matrix:
+        condition: service_healthy
     volumes:
       - ${DIRECTORY}/whatsapp:/data
     labels:
@@ -138,14 +138,14 @@ services:
       options:
         max-size: 10m
         max-file: '3'
-    depends_on:
-      matrix:
-        condition: service_healthy
     deploy:
       resources:
         limits:
           memory: '256M'
           cpus: '0.25'
+    depends_on:
+      matrix:
+        condition: service_healthy
     volumes:
       - ${DIRECTORY}/meta:/data
     labels:

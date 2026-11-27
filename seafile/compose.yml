@@ -147,7 +147,7 @@ services:
           memory: '2G'
           cpus: '2.0'
     environment:
-      JWT_ENABLED: 'true'
+      JWT_ENABLED: true
       JWT_SECRET: ${ONLYOFFICE_JWT_SECRET}
     volumes:
       - onlyoffice:/var/lib/onlyoffice
@@ -177,9 +177,9 @@ services:
     healthcheck:
       test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect', '--mariadbupgrade', '--innodb_initialized']
       interval: 20s
-      start_period: 30s
       timeout: 5s
       retries: 10
+      start_period: 30s
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_LOG_CONSOLE: true

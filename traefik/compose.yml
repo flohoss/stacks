@@ -46,7 +46,7 @@ services:
       ${TRAEFIK_EXTRA_FLAGS:-}
     environment:
       HETZNER_API_TOKEN: ${HETZNER_API_TOKEN}
-      HETZNER_TTL: '60'
+      HETZNER_TTL: 60
     volumes:
       - ${DIRECTORY}:/etc/traefik
       - /var/run/docker.sock:/var/run/docker.sock:ro

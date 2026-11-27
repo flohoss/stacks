@@ -29,8 +29,8 @@ services:
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/forgejo.webp
       - traefik.enable=true
-      - traefik.http.routers.forgejo.entrypoints=https
       - traefik.http.routers.forgejo.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.forgejo.entrypoints=https
       - traefik.http.routers.forgejo.tls=true
       - traefik.http.routers.forgejo.tls.certresolver=hetzner
       - traefik.http.routers.forgejo.service=forgejo

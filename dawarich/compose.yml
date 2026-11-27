@@ -2,15 +2,15 @@ services:
   dawarich:
     image: freikin/dawarich:1.23.0@sha256:c9c6a9c04fa2ad11c438fc0b0ea3b7d95fc7e6d8c7a3cfa98bf1fc5aef2dbfd4
     restart: always
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
           memory: '4G'
           cpus: '2.0'
-    logging:
-      options:
-        max-size: 10m
-        max-file: '3'
     extra_hosts:
       - ${EXTRA_HOSTS:-localhost:127.0.0.1}
     depends_on:
@@ -39,9 +39,9 @@ services:
       REDIS_URL: redis://redis:6379
       STORE_GEODATA: true
       # Background jobs run inside the web process, which requires a single web worker
-      SIDEKIQ_EMBEDDED: 'true'
-      WEB_CONCURRENCY: '0'
-      BACKGROUND_PROCESSING_CONCURRENCY: '2'
+      SIDEKIQ_EMBEDDED: true
+      WEB_CONCURRENCY: 0
+      BACKGROUND_PROCESSING_CONCURRENCY: 2
       RAILS_LOG_TO_STDOUT: true
       SMTP_SERVER: ${SMTP_SERVER:-}
       SMTP_PORT: ${SMTP_PORT:-}

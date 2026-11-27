@@ -2,10 +2,11 @@ services:
   traefik:
     image: traefik:v3.8.0@sha256:00c9734983e74ae35a1fc18eaee9e9da13f3dde95c4e45b3b8c3b60e0dbd2d17
     container_name: netbird-traefik
-    restart: unless-stopped
-    networks:
-      netbird:
-        ipv4_address: 172.30.0.10
+    restart: always
+    logging:
+      options:
+        max-size: 500m
+        max-file: '2'
     depends_on:
       crowdsec:
         condition: service_healthy
@@ -34,9 +35,16 @@ services:
       - '--entrypoints.apiint.http.aliasHeadersStrategy=delete'
       - '--experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin'
       - '--experimental.plugins.bouncer.version=v1.8.2'
-    ports:
-      - '443:443'
-      - '80:80'
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard@docker | grep -q netbird-dashboard-crowdsec && wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard-api@docker | grep -q netbird-dashboard-crowdsec',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     volumes:
       - letsencrypt:/letsencrypt
       - ${DIRECTORY}/traefik.yaml:/etc/traefik/dynamic.yaml:ro
@@ -52,29 +60,21 @@ services:
       - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecHost=crowdsec:7422
       - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecFailureBlock=true
       - traefik.http.middlewares.netbird-dashboard-crowdsec.plugin.bouncer.crowdsecAppsecUnreachableBlock=true
-    healthcheck:
-      test:
-        [
-          'CMD-SHELL',
-          'wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard@docker | grep -q netbird-dashboard-crowdsec && wget -qO- http://127.0.0.1:8081/api/http/routers/netbird-dashboard-api@docker | grep -q netbird-dashboard-crowdsec',
-        ]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 20s
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '500m'
-        max-file: '2'
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.10
 
   dashboard:
     image: netbirdio/dashboard:v2.100.0@sha256:0b06599c1ce9b91448faf3fae682fe66603c67034b2bd093dc66165283d031cd
     container_name: netbird-dashboard
-    restart: unless-stopped
-    networks:
-      netbird:
-        ipv4_address: 172.30.0.11
+    restart: always
+    logging:
+      options:
+        max-size: 500m
+        max-file: '2'
     environment:
       NETBIRD_MGMT_API_ENDPOINT: https://${DOMAIN}
       NETBIRD_MGMT_GRPC_API_ENDPOINT: https://${DOMAIN}
@@ -86,7 +86,7 @@ services:
       AUTH_SUPPORTED_SCOPES: openid profile email groups
       AUTH_REDIRECT_URI: /nb-auth
       AUTH_SILENT_REDIRECT_URI: /nb-silent-auth
-      NGINX_SSL_PORT: '443'
+      NGINX_SSL_PORT: 443
       LETSENCRYPT_DOMAIN: none
     labels:
       - traefik.enable=true
@@ -98,28 +98,25 @@ services:
       - traefik.http.routers.netbird-dashboard.middlewares=netbird-dashboard-crowdsec@docker,netbird-headers@file
       - traefik.http.routers.netbird-dashboard.priority=1
       - traefik.http.services.dashboard.loadbalancer.server.port=80
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '500m'
-        max-file: '2'
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.11
 
   netbird-server:
     image: netbirdio/netbird-server:0.84.0@sha256:e439e43e8db328656baeafe124939cfdac3a71cc38fcad9b44deefe0e84a5ede
     container_name: netbird-server
-    restart: unless-stopped
-    networks:
-      netbird:
-        ipv4_address: 172.30.0.12
+    restart: always
+    logging:
+      options:
+        max-size: 500m
+        max-file: '2'
+    command: ['--config', '/etc/netbird/config.yaml']
     environment:
       NB_AUTH_SECRET: ${NB_AUTH_SECRET}
       NB_STORE_ENCRYPTION_KEY: ${NB_STORE_ENCRYPTION_KEY}
-    ports:
-      - '3478:3478/udp'
     volumes:
       - ${DIRECTORY}/data:/var/lib/netbird
       - ${DIRECTORY}/config.yaml:/etc/netbird/config.yaml
-    command: ['--config', '/etc/netbird/config.yaml']
     labels:
       - traefik.enable=true
       - traefik.http.routers.netbird-grpc.rule=Host(`${DOMAIN}`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))
@@ -144,21 +141,20 @@ services:
       - traefik.http.services.netbird-server.loadbalancer.server.port=80
       - traefik.http.services.netbird-server-h2c.loadbalancer.server.port=80
       - traefik.http.services.netbird-server-h2c.loadbalancer.server.scheme=h2c
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '500m'
-        max-file: '2'
+    ports:
+      - '3478:3478/udp'
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.12
 
   proxy:
     image: netbirdio/reverse-proxy:0.84.0@sha256:95e300535962fc103247539824ca216f7c2deb27f5d7c95cc4931d7d2a85556b
     container_name: netbird-proxy
-    ports:
-      - 51820:51820/udp
-    restart: unless-stopped
-    networks:
-      netbird:
-        ipv4_address: 172.30.0.13
+    restart: always
+    logging:
+      options:
+        max-size: 500m
+        max-file: '2'
     depends_on:
       netbird-server:
         condition: service_started
@@ -190,41 +186,35 @@ services:
       - traefik.tcp.routers.proxy-passthrough.priority=1
       - traefik.tcp.services.proxy-tls.loadbalancer.server.port=8443
       - traefik.tcp.services.proxy-tls.loadbalancer.serverstransport=pp-v2@file
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '500m'
-        max-file: '2'
+    ports:
+      - '51820:51820/udp'
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.13
 
   crowdsec:
     image: crowdsecurity/crowdsec:v1.8.2@sha256:65b74942f7e7ed5c60fde4ac15fc4ba715904c398c8b16dd451f4907d90347d4
     container_name: netbird-crowdsec
-    restart: unless-stopped
-    networks:
-      netbird:
-        ipv4_address: 172.30.0.14
-    environment:
-      COLLECTIONS: crowdsecurity/linux crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
-      BOUNCER_KEY_netbird_dashboard: ${CROWDSEC_DASHBOARD_BOUNCER_KEY}
-    volumes:
-      - ${DIRECTORY}/crowdsec/acquis.d/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
-      - crowdsec:/var/lib/crowdsec/data
+    restart: always
+    logging:
+      options:
+        max-size: 500m
+        max-file: '2'
     healthcheck:
       test: ['CMD-SHELL', "cscli lapi status >/dev/null 2>&1 && bash -c '</dev/tcp/127.0.0.1/7422'"]
       interval: 10s
       timeout: 5s
       retries: 15
       start_period: 30s
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '500m'
-        max-file: '2'
-
-volumes:
-  letsencrypt:
-  certs:
-  crowdsec:
+    environment:
+      COLLECTIONS: crowdsecurity/linux crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      BOUNCER_KEY_netbird_dashboard: ${CROWDSEC_DASHBOARD_BOUNCER_KEY}
+    volumes:
+      - ${DIRECTORY}/crowdsec/acquis.d/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml:ro
+      - crowdsec:/var/lib/crowdsec/data
+    networks:
+      netbird:
+        ipv4_address: 172.30.0.14
 
 networks:
   netbird:
@@ -234,3 +224,8 @@ networks:
       config:
         - subnet: 172.30.0.0/24
           gateway: 172.30.0.1
+
+volumes:
+  letsencrypt: {}
+  certs: {}
+  crowdsec: {}

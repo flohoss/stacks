@@ -6,12 +6,12 @@ services:
       options:
         max-size: 5m
         max-file: '2'
-    hostname: gobackup
     deploy:
       resources:
         limits:
           memory: '1G'
           cpus: '1.0'
+    hostname: gobackup
     volumes:
       - ${DIRECTORY}/config:/app/config/
       - ${DIRECTORY}/.resticpwd:/secrets/.resticpwd

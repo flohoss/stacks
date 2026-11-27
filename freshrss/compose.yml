@@ -2,15 +2,15 @@ services:
   freshrss:
     image: freshrss/freshrss:1.31.0@sha256:31b0acfcb8e11600aa6ce697ff8d9d7ea620c85d766e5e764f487b433d20d066
     restart: always
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
     deploy:
       resources:
         limits:
           memory: '256M'
           cpus: '0.5'
-    logging:
-      options:
-        max-size: 5m
-        max-file: '2'
     extra_hosts:
       - ${EXTRA_HOSTS:-localhost:127.0.0.1}
     environment:

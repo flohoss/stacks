@@ -34,8 +34,8 @@ services:
       - net.unraid.docker.webui=https://${DOMAIN}
       - net.unraid.docker.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/webp/immich.webp
       - traefik.enable=true
-      - traefik.http.routers.immich.entrypoints=https
       - traefik.http.routers.immich.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.immich.entrypoints=https
       - traefik.http.routers.immich.tls=true
       - traefik.http.routers.immich.tls.certresolver=hetzner
     ports:
@@ -100,7 +100,7 @@ services:
         limits:
           memory: '2G'
           cpus: '2.0'
-    shm_size: 128mb
+    shm_size: 128M
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U user -d db']
       interval: 5s
